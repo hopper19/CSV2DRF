@@ -78,7 +78,7 @@ def get_metadata(data_file):
     metadata["a_d_sample_rate"] = int(metadata["a_d_sample_rate"])
     return metadata
 
-        
+
 def compare_metadata(prev_metadata, curr_metadata):
     ''' Determine if critical Grape2 settings have changed. Return True if equivalent '''
     prev_loc = (prev_metadata["lat"], prev_metadata["long"])
@@ -180,11 +180,11 @@ def create_drf_metadata(channel_dir, config, metadata, start_global_index, uuid_
     return True
 
 def main():
-    version = "1.00"
-    
+    version = "1.1"
+
     # Create the argument parser
     parser = argparse.ArgumentParser(description="Grape 2 CSV to DRF Converter")
-        
+
     # Add the argument
     parser.add_argument(
         "-v",
@@ -197,30 +197,35 @@ def main():
         "dates", help="date(s) of the data to be converted", type=str, nargs="*", default=sys.stdin
     )
     parser.add_argument("-u", "--uuid", help="User-defined UUID", default=None)
+    parser.add_argument(
+        "-i", "--input_dir", help="Input directory containing CSV files", required=True
+    )
+    parser.add_argument(
+        "-o", "--output_dir", help="Output directory for DRF files", required=True
+    )
 
     # Parse the arguments
     args = parser.parse_args()
-    
-    g2_dir = '/home/cuong/drive/GRAPE2-SFTP/grape2/AB1XB'
-    input_dir = os.path.join(g2_dir, 'Srawdata')
+
+    input_dir = args.input_dir
+    output_dir = args.output_dir
     uuid_str = args.uuid if args.uuid is not None else uuid.uuid4().hex
-    
+
     configfile = sys.argv[0].replace('.py', '.conf')
     config = ConfigParser(interpolation=None)
     config.optionxform = str
     config.read(configfile)
-        
+
     for date in args.dates:
-        ymd = [int(x) for x in date.split('-')]
         # NOTE: possible error: what if the first written timestamp is NOT at the first second of that day
         start_time = int(datetime.datetime.strptime(date, "%Y-%m-%d").strftime('%s'))
-        output_dir = os.path.join(g2_dir, 'Sdrf/OBS' + date + 'T00-00')
+        
+        output_dir = os.path.join(output_dir,'OBS' + date + 'T00-00')
         os.makedirs(output_dir, exist_ok=True)
         print(f"--- CONVERTING DATA INTO DRF FOR {date} ---")
         search_pattern = os.path.join(input_dir, f"{date}*.csv")
         print(f"Searching in: {search_pattern}")
 
-        
         # Use glob to find all files matching the given date
         data_files = sorted(glob.glob(search_pattern))
         if len(data_files) == 0:
@@ -228,20 +233,20 @@ def main():
             continue
 
         metadata = get_metadata(data_files[0])
-        
+
         ok, channel_dir, start_global_index = create_drf_dataset(data_files, output_dir, config['global'], metadata, start_time, uuid_str)
         print('create_drf_dataset returned', ok, file=sys.stderr)
         if not ok:
             raise DatasetCreationError()
-        
+
         ok = create_drf_metadata(channel_dir, config, metadata, start_global_index, uuid_str)
         print('create_drf_metadata returned', ok, file=sys.stderr)
         if not ok:
             raise MetadataCreationError()
         print()
-        
+
     print("Exiting python combined processing program gracefully")
-    
+
 if __name__ == '__main__':
     try:
         main()
