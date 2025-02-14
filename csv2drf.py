@@ -125,7 +125,7 @@ def create_drf_dataset(input_files, dataset_dir, config_global, metadata, start_
                             ) as do:
         for data_file in input_files:
             with open(data_file) as fp:
-                zero_adjust = [int(value, 16) for value in metadata["a_d_zero_cal_data"].split(',') - 0x8000] 
+                zero_adjust = [int(value, 16) - 0x8000 for value in metadata["a_d_zero_cal_data"].split(',')] 
                 curr_time_index = 0
                 samples = np.zeros((metadata["a_d_sample_rate"], 3), dtype=dtype)
                 idx = 0
@@ -180,7 +180,7 @@ def create_drf_metadata(channel_dir, config, metadata, start_global_index, uuid_
     return True
 
 def main():
-    version = "1.1"
+    version = "1.1.1"
 
     # Create the argument parser
     parser = argparse.ArgumentParser(description="Grape 2 CSV to DRF Converter")
