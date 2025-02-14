@@ -12,6 +12,7 @@ docopt==0.6.2
 executing==2.1.0
 fastjsonschema==2.20.0
 h5py==3.12.1
+haversine
 idna==3.10
 ipython==8.12.3
 jedi==0.19.1
@@ -45,7 +46,7 @@ pyzmq==26.2.0
 referencing==0.35.1
 requests==2.32.3
 rpds-py==0.20.0
-scipy==1.14.1
+scipy
 six==1.16.0
 soupsieve==2.6
 stack-data==0.6.3
@@ -59,4 +60,3 @@ watchdog==5.0.3
 wcwidth==0.2.13
 webencodings==0.5.1
 yarg==0.1.9
-haversine
