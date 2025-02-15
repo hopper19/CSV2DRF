@@ -75,7 +75,7 @@ def get_metadata(data_file):
                 re.sub(r'[^\w]', '_', header).lower(): value
                 for header, value in matches
             })
-    metadata["a_d_sample_rate"] = int(metadata["a_d_sample_rate"])
+    metadata["a_d_sample_rate"] = int(metadata["a_d_sample_rate"]) if "a_d_sample_rate" in metadata else 8000
     return metadata
 
 
@@ -180,7 +180,7 @@ def create_drf_metadata(channel_dir, config, metadata, start_global_index, uuid_
     return True
 
 def main():
-    version = "1.1.1"
+    version = "1.1.2"
 
     # Create the argument parser
     parser = argparse.ArgumentParser(description="Grape 2 CSV to DRF Converter")
