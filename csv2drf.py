@@ -245,7 +245,7 @@ def create_drf_metadata(channel_dir, config, metadata, start_global_index, uuid_
 
 
 def main():
-    version = "1.1.2"
+    version = "1.1.3"
 
     parser = argparse.ArgumentParser(description="Grape 2 CSV to DRF Converter")
     parser.add_argument(
