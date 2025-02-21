@@ -25,8 +25,11 @@ class ConfigLoader:
         self.config.optionxform = str
         self.config.read(configpath)
 
-    def get_global_config(self):
+    def get_global(self):
         return self.config["global"]
+    
+    def get_subchannel(self, beacon):
+        return self.config["subchannels"][beacon]
 
 class CSV2DRFConverter:
     def __init__(self, inputdir, outputdir, config_path=None, uuid_str=None):
@@ -34,11 +37,9 @@ class CSV2DRFConverter:
         self.outputdir = outputdir
         self.uuid_str = uuid_str if uuid_str is not None else uuid.uuid4().hex
         if config_path is not None:
-            self.config = ConfigLoader(config_path).get_global_config()
+            self.config = ConfigLoader(config_path)
         else:
-            self.config = ConfigLoader(
-                sys.argv[0].replace(".py", ".conf")
-            ).get_global_config()
+            self.config = ConfigLoader(sys.argv[0].replace(".py", ".conf"))
         self.drf_writer = DRFWriter(self.config)
 
     def convert(self, date):
@@ -126,10 +127,10 @@ class CSVProcessor:
 class DRFWriter:
     def __init__(self, config):
         self.config = config
-        
+
     def create_drf_metadata(self, channel_dir, metadata, start_global_index, uuid_str):
-        subdir_cadence = int(self.config["subdir_cadence"])
-        file_cadence_secs = int(self.config["millseconds_per_file"]) / 1000
+        subdir_cadence = int(self.config.get_global()["subdir_cadence"])
+        file_cadence_secs = int(self.config.get_global()["millseconds_per_file"]) / 1000
         metadatadir = os.path.join(channel_dir, "metadata")
         os.makedirs(metadatadir)
         do = drf.DigitalMetadataWriter(
@@ -142,7 +143,7 @@ class DRFWriter:
         )
         sample = start_global_index
         frequencies = [
-            float(self.config["subchannels"][metadata["beacons"][i]]) for i in range(3)
+            float(self.config.get_subchannel(metadata["beacons"][i])) for i in range(3)
         ]
         data_dict = {
             "uuid_str": uuid_str,
@@ -155,10 +156,10 @@ class DRFWriter:
         return True
 
     def create_drf_dataset(self, input_files, dataset_dir, metadata, start_time, uuid_str):
-        channel_name = self.config["channel_name"]
-        subdir_cadence = int(self.config["subdir_cadence"])
-        millseconds_per_file = int(self.config["millseconds_per_file"])
-        compression_level = int(self.config["compression_level"])
+        channel_name = self.config.get_global()["channel_name"]
+        subdir_cadence = int(self.config.get_global()["subdir_cadence"])
+        millseconds_per_file = int(self.config.get_global()["millseconds_per_file"])
+        compression_level = int(self.config.get_global()["compression_level"])
         dtype = np.uint16
 
         # set up top level directory
@@ -167,9 +168,9 @@ class DRFWriter:
         os.makedirs(channel_dir)
 
         print("Writing Digital RF dataset. This will take a while")
-        
+
         start_global_index = int(start_time * metadata["a_d_sample_rate"])
-        
+
         with drf.DigitalRFWriter(
             channel_dir,
             dtype,
@@ -232,7 +233,8 @@ class DRFWriter:
                                 for i, x in enumerate(line.split(","))
                             ]  # the right code
                             idx += 1
-                
+        return True, channel_dir, start_global_index
+
     def compare_metadata(self, prev_metadata, curr_metadata):
         """Determine if critical Grape2 settings have changed. Return True if equivalent"""
         prev_loc = (prev_metadata["lat"], prev_metadata["long"])
@@ -442,7 +444,7 @@ def create_drf_metadata(channel_dir, config, metadata, start_global_index, uuid_
 
 
 if __name__ == "__main__":
-    version = "1.1.4"
+    version = "1.1.5"
 
     parser = argparse.ArgumentParser(description="Grape 2 CSV to DRF Converter")
     parser.add_argument(
