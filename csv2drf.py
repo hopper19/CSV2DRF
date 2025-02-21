@@ -43,7 +43,7 @@ class CSV2DRFConverter:
         self.drf_writer = DRFWriter(self.config)
 
     def convert(self, date):
-        start_time = int(datetime.datetime.strptime(date, "%Y-%m-%d").strftime("%s"))
+        start_time = int(datetime.datetime.strptime(date, "%Y-%m-%d").replace(tzinfo=datetime.timezone.utc).timestamp())
         output_dir = os.path.join(self.outputdir, "OBS" + date + "T00-00")
         os.makedirs(output_dir, exist_ok=True)
         search_pattern = os.path.join(self.inputdir, f"{date}*.csv")
@@ -219,7 +219,7 @@ class DRFWriter:
                             curr_epoch_time = int(
                                 datetime.datetime.strptime(
                                     line[1:15], "%Y%m%d%H%M%S"
-                                ).strftime("%s")
+                                ).replace(tzinfo=datetime.timezone.utc).timestamp()
                             )
                             curr_time_index = (
                                 curr_epoch_time * metadata["a_d_sample_rate"]
@@ -255,30 +255,6 @@ class DRFWriter:
         return all(prev_metadata[key] == curr_metadata[key] for key in critical_keys)
 
 
-class DatasetCreationError(Exception):
-    """Exception raised for errors in the dataset creation."""
-
-    def __init__(self, message="Failed to create DRF dataset"):
-        self.message = message
-        super().__init__(self.message)
-
-
-class MetadataCreationError(Exception):
-    """Exception raised for errors in the metadata creation."""
-
-    def __init__(self, message="Failed to create DRF metadata"):
-        self.message = message
-        super().__init__(self.message)
-
-
-def find_rows_with_characters(file_path):
-    row_numbers = []
-    with open(file_path, "r") as file:
-        for row_number, line in enumerate(file):
-            if any(char in line for char in ["#", "T", "C"]):
-                row_numbers.append(row_number)
-    return row_numbers
-
 def get_metadata(data_file):
     """Parse for the metadata from the given CSV file"""
     # Compile a regular expression to match the headers and field values
@@ -310,141 +286,8 @@ def get_metadata(data_file):
     metadata["a_d_sample_rate"] = int(metadata.get("a_d_sample_rate", 8000))
     return metadata
 
-
-def compare_metadata(prev_metadata, curr_metadata):
-    """Determine if critical Grape2 settings have changed. Return True if equivalent"""
-    prev_loc = (prev_metadata["lat"], prev_metadata["long"])
-    curr_loc = (curr_metadata["lat"], curr_metadata["long"])
-
-    if hs.haversine(prev_loc, curr_loc) * 1000 > 5:
-        return False
-
-    critical_keys = [
-        "rfgain",
-        "antenna",
-        "beacon_1_now_decoded",
-        "beacon_2_now_decoded",
-        "beacon_3_now_decoded",
-        "a_d_sample_rate",
-    ]
-
-    return all(prev_metadata[key] == curr_metadata[key] for key in critical_keys)
-
-
-def create_drf_dataset(
-    input_files, dataset_dir, config_global, metadata, start_time, uuid_str
-):
-    channel_name = config_global["channel_name"]
-    subdir_cadence = int(config_global["subdir_cadence"])
-    millseconds_per_file = int(config_global["millseconds_per_file"])
-    compression_level = int(config_global["compression_level"])
-    dtype = np.uint16
-
-    # set up top level directory
-    channel_dir = os.path.join(dataset_dir, channel_name)
-    shutil.rmtree(dataset_dir, ignore_errors=True)
-    os.makedirs(channel_dir)
-
-    print("Writing Digital RF dataset. This will take a while")
-
-    start_global_index = int(start_time * metadata["a_d_sample_rate"])
-
-    with drf.DigitalRFWriter(
-        channel_dir,
-        dtype,
-        subdir_cadence,
-        millseconds_per_file,
-        start_global_index,
-        metadata["a_d_sample_rate"],  # sample_rate_numerator
-        1,  # sample_rate_denominator
-        uuid_str,
-        compression_level,
-        False,  # checksum
-        False,  # is_complex
-        3,  # num_beacons
-        True,  # is_continuous
-        False,  # marching_periods
-    ) as do:
-        for data_file in input_files:
-            with open(data_file) as fp:
-                zero_adjust = [
-                    int(value, 16) - 0x8000
-                    for value in metadata["a_d_zero_cal_data"].split(",")
-                ]
-                curr_time_index = 0
-                samples = np.zeros((metadata["a_d_sample_rate"], 3), dtype=dtype)
-                idx = 0
-                print(f"Processing file {data_file}")
-                csv_metadata = get_metadata(data_file)
-                if not compare_metadata(metadata, csv_metadata):
-                    print(
-                        "Critical settings have changed! Aborting conversion for this day..."
-                    )
-                    shutil.rmtree(dataset_dir, ignore_errors=True)
-                    return False, None, None
-                for line in fp:
-                    line = line.strip()
-                    if not line:
-                        break
-                    elif line.startswith("C"):
-                        if line.endswith("V"):
-                            do.rf_write(samples, next_sample=curr_time_index)
-                        samples = np.zeros(
-                            (metadata["a_d_sample_rate"], 3), dtype=dtype
-                        )
-                        idx = 0
-                    elif line.startswith("T"):
-                        curr_epoch_time = int(
-                            datetime.datetime.strptime(
-                                line[1:15], "%Y%m%d%H%M%S"
-                            ).strftime("%s")
-                        )
-                        curr_time_index = (
-                            curr_epoch_time * metadata["a_d_sample_rate"]
-                            - start_global_index
-                        )
-                    elif line.startswith("#"):
-                        continue
-                    else:
-                        samples[idx] = [
-                            int(x, 16) + zero_adjust[i]
-                            for i, x in enumerate(line.split(","))
-                        ]  # the right code
-                        idx += 1
-
-    return True, channel_dir, start_global_index
-
-
-def create_drf_metadata(channel_dir, config, metadata, start_global_index, uuid_str):
-    subdir_cadence = int(config["global"]["subdir_cadence"])
-    file_cadence_secs = int(config["global"]["millseconds_per_file"]) / 1000
-    metadatadir = os.path.join(channel_dir, "metadata")
-    os.makedirs(metadatadir)
-    do = drf.DigitalMetadataWriter(
-        metadatadir,
-        subdir_cadence,
-        file_cadence_secs,  # file_cadence_secs
-        metadata["a_d_sample_rate"],  # sample_rate_numerator
-        1,  # sample_rate_denominator
-        "metadata",  # file_name
-    )
-    sample = start_global_index
-    frequencies = [
-        float(config["subchannels"][metadata["beacons"][i]]) for i in range(3)
-    ]
-    data_dict = {
-        "uuid_str": uuid_str,
-        "lat": np.single(metadata["lat"]),
-        "long": np.single(metadata["long"]),
-        "center_frequencies": np.ascontiguousarray(frequencies),
-    }
-    data_dict.update(metadata)
-    do.write(sample, data_dict)
-    return True
-
-
 if __name__ == "__main__":
-    version = "1.1.5"
+    version = "1.1.6"
 
     parser = argparse.ArgumentParser(description="Grape 2 CSV to DRF Converter")
     parser.add_argument(
