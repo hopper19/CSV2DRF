@@ -4,6 +4,8 @@ Last Modified on Saturday February 15 2025
 
 Utility to convert G2 raw data from CSV to DRF
 
+TODO: what happens if metadata changes in the middle of the day?
+
 @authors Cuong Nguyen
 reference: drf-utils by fventuri
 """
@@ -16,8 +18,6 @@ import haversine as hs
 import digital_rf as drf
 from configparser import ConfigParser
 
-# warnings.filterwarnings("ignore", category=DeprecationWarning)
-
 
 class ConfigLoader:
     def __init__(self, configpath):
@@ -27,9 +27,10 @@ class ConfigLoader:
 
     def get_global(self):
         return self.config["global"]
-    
+
     def get_subchannel(self, beacon):
         return self.config["subchannels"][beacon]
+
 
 class CSV2DRFConverter:
     def __init__(self, inputdir, outputdir, config_path=None, uuid_str=None):
@@ -43,7 +44,11 @@ class CSV2DRFConverter:
         self.drf_writer = DRFWriter(self.config)
 
     def convert(self, date):
-        start_time = int(datetime.datetime.strptime(date, "%Y-%m-%d").replace(tzinfo=datetime.timezone.utc).timestamp())
+        start_time = int(
+            datetime.datetime.strptime(date, "%Y-%m-%d")
+            .replace(tzinfo=datetime.timezone.utc)
+            .timestamp()
+        )
         output_dir = os.path.join(self.outputdir, "OBS" + date + "T00-00")
         os.makedirs(output_dir, exist_ok=True)
         search_pattern = os.path.join(self.inputdir, f"{date}*.csv")
@@ -70,7 +75,7 @@ class CSV2DRFConverter:
         )
         if not ok:
             raise Exception("Failed to create DRF metadata")
-        print(f'Successfully created metadata for {date}')
+        print(f"Successfully created metadata for {date}")
 
 
 class CSVProcessor:
@@ -108,21 +113,6 @@ class CSVProcessor:
         metadata["a_d_sample_rate"] = int(metadata.get("a_d_sample_rate", 8000))
         return metadata
 
-    def find_rows_with_characters(self):
-        row_numbers = []
-        # NOTE: possible use: track whether this file is complete or there were dropped packets
-        t_count = 0
-        c_count = 0
-
-        with open(self.file_path, "r") as file:
-            for row_number, line in enumerate(file):
-                if any(char in line for char in ["#", "T", "C"]):
-                    row_numbers.append(row_number)
-                if line.startswith("T"):
-                    t_count += 1
-                elif line.startswith("C"):
-                    c_count += 1
-        return row_numbers
 
 class DRFWriter:
     def __init__(self, config):
@@ -155,12 +145,14 @@ class DRFWriter:
         do.write(sample, data_dict)
         return True
 
-    def create_drf_dataset(self, input_files, dataset_dir, metadata, start_time, uuid_str):
+    def create_drf_dataset(
+        self, input_files, dataset_dir, metadata, start_time, uuid_str
+    ):
         channel_name = self.config.get_global()["channel_name"]
         subdir_cadence = int(self.config.get_global()["subdir_cadence"])
         millseconds_per_file = int(self.config.get_global()["millseconds_per_file"])
         compression_level = int(self.config.get_global()["compression_level"])
-        dtype = np.uint16
+        dtype = np.int32
 
         # set up top level directory
         channel_dir = os.path.join(dataset_dir, channel_name)
@@ -217,9 +209,9 @@ class DRFWriter:
                             idx = 0
                         elif line.startswith("T"):
                             curr_epoch_time = int(
-                                datetime.datetime.strptime(
-                                    line[1:15], "%Y%m%d%H%M%S"
-                                ).replace(tzinfo=datetime.timezone.utc).timestamp()
+                                datetime.datetime.strptime(line[1:15], "%Y%m%d%H%M%S")
+                                .replace(tzinfo=datetime.timezone.utc)
+                                .timestamp()
                             )
                             curr_time_index = (
                                 curr_epoch_time * metadata["a_d_sample_rate"]
@@ -254,6 +246,14 @@ class DRFWriter:
 
         return all(prev_metadata[key] == curr_metadata[key] for key in critical_keys)
 
+    def hex_ascii_to_unsigned_int(self, hex_string):
+        """a function that takes a 4-character 16-bit hex string in ascii format and convert it to an unsigned integer"""
+        # Convert the hex string to an integer
+        int_value = int(hex_string, 16)
+        # Ensure the value is treated as unsigned 16-bit
+        unsigned_int_value = int_value & 0xFFFF
+        return unsigned_int_value
+
 
 def get_metadata(data_file):
     """Parse for the metadata from the given CSV file"""
@@ -286,8 +286,9 @@ def get_metadata(data_file):
     metadata["a_d_sample_rate"] = int(metadata.get("a_d_sample_rate", 8000))
     return metadata
 
+
 if __name__ == "__main__":
-    version = "1.1.6"
+    version = "1.1.7"
 
     parser = argparse.ArgumentParser(description="Grape 2 CSV to DRF Converter")
     parser.add_argument(
