@@ -1,6 +1,6 @@
 """
 Created on Fri May 24 2024
-Last Modified on Saturday February 15 2025
+Last Modified on February 23 2025
 
 Utility to convert G2 raw data from CSV to DRF
 
@@ -17,8 +17,7 @@ import pandas as pd
 import haversine as hs
 import digital_rf as drf
 from configparser import ConfigParser
-
-
+from metadata import G2Metadata
 class ConfigLoader:
     def __init__(self, configpath):
         self.config = ConfigParser(interpolation=None)
@@ -36,7 +35,7 @@ class CSV2DRFConverter:
     def __init__(self, inputdir, outputdir, config_path=None, uuid_str=None):
         self.inputdir = inputdir
         self.outputdir = outputdir
-        self.uuid_str = uuid_str if uuid_str is not None else uuid.uuid4().hex
+        self.uuid_str = uuid_str
         if config_path is not None:
             self.config = ConfigLoader(config_path)
         else:
@@ -61,88 +60,63 @@ class CSV2DRFConverter:
             return
 
         # assumption: all files have the same metadata
-        metadata = CSVProcessor(data_files[0]).extract_metadata()
+        global_metadata = G2Metadata.extract_metadata(data_files[0])
 
         success, channel_dir, start_global_index = self.drf_writer.create_drf_dataset(
-            data_files, output_dir, metadata, start_time, self.uuid_str
+            data_files, output_dir, global_metadata, start_time, self.uuid_str
         )
         if not success:
             raise Exception("Failed to create DRF dataset")
         print(f"Successfully converted data for {date}")
 
-        ok = self.drf_writer.create_drf_metadata(
-            channel_dir, metadata, start_global_index, self.uuid_str
-        )
-        if not ok:
-            raise Exception("Failed to create DRF metadata")
-        print(f"Successfully created metadata for {date}")
-
-
-class CSVProcessor:
-    def __init__(self, file_path):
-        self.file_path = file_path
-
-    def extract_metadata(self):
-        """Parse for the metadata from the given CSV file"""
-        # Compile a regular expression to match the headers and field values
-        pattern = re.compile(r"#\s*(.+?)\s{2,}(.+)")
-        metadata = dict()
-        with open(self.file_path, "r") as file:
-            header = file.readline().strip().split(",")
-            metadata["lat"] = float(header[4])
-            metadata["long"] = float(header[5])
-            metadata["beacons"] = []
-            for line in file:
-                line = line.strip()
-                if not line.startswith("#"):
-                    # Read past the comments
-                    break
-                elif "beacon" in line.lower():
-                    metadata["beacons"].append(line.split()[-1])
-
-                # Extract headers and values using findall
-                matches = pattern.findall(line)
-
-                # Convert the list of tuples to a dictionary
-                metadata.update(
-                    {
-                        re.sub(r"[^\w]", "_", header).lower(): value
-                        for header, value in matches
-                    }
-                )
-        metadata["a_d_sample_rate"] = int(metadata.get("a_d_sample_rate", 8000))
-        return metadata
+        # ok = self.drf_writer.create_drf_metadata(
+        #     channel_dir, metadata, start_global_index, self.uuid_str
+        # )
+        # if not ok:
+        #     raise Exception("Failed to create DRF metadata")
+        # print(f"Successfully created metadata for {date}")
 
 
 class DRFWriter:
-    def __init__(self, config):
+    def __init__(self, config, dataset_dir, metadata, start_global_index, uuid_str=None):
         self.config = config
-
-    def create_drf_metadata(self, channel_dir, metadata, start_global_index, uuid_str):
-        subdir_cadence = int(self.config.get_global()["subdir_cadence"])
-        file_cadence_secs = int(self.config.get_global()["millseconds_per_file"]) / 1000
-        metadatadir = os.path.join(channel_dir, "metadata")
-        os.makedirs(metadatadir)
-        do = drf.DigitalMetadataWriter(
-            metadatadir,
-            subdir_cadence,
-            file_cadence_secs,  # file_cadence_secs
-            metadata["a_d_sample_rate"],  # sample_rate_numerator
+        
+        # set up top level directory
+        self.channel_dir = os.path.join(dataset_dir, channel_name)
+        shutil.rmtree(dataset_dir, ignore_errors=True)
+        os.makedirs(channel_dir)
+        
+        self.metadata = metadata
+        self.start_global_index = start_global_index
+        self.uuid_str = uuid_str if uuid_str is not None else uuid.uuid4().hex
+        
+        self.metadatadir = os.path.join(channel_dir, "metadata")
+        os.makedirs(self.metadatadir)
+        
+        self.subdir_cadence = int(self.config.get_global()["subdir_cadence"])
+        self.file_cadence_secs = int(self.config.get_global()["millseconds_per_file"]) / 1000
+        self.do = drf.DigitalMetadataWriter(
+            self.metadatadir,
+            self.subdir_cadence,
+            self.file_cadence_secs,  # file_cadence_secs
+            self.metadata["a_d_sample_rate"],  # sample_rate_numerator
             1,  # sample_rate_denominator
             "metadata",  # file_name
         )
-        sample = start_global_index
+
+    def create_drf_metadata(self):
+        sample = self.start_global_index
         frequencies = [
-            float(self.config.get_subchannel(metadata["beacons"][i])) for i in range(3)
+            float(self.config.get_subchannel(self.metadata["beacons"][i])) for i in range(3)
         ]
         data_dict = {
-            "uuid_str": uuid_str,
-            "lat": np.single(metadata["lat"]),
-            "long": np.single(metadata["long"]),
+            "uuid_str": self.uuid_str,
+            "lat": np.single(self.metadata["lat"]),
+            "long": np.single(self.metadata["long"]),
             "center_frequencies": np.ascontiguousarray(frequencies),
         }
-        data_dict.update(metadata)
-        do.write(sample, data_dict)
+        data_dict.update(self.metadata)
+        self.do.write(sample, data_dict)
         return True
 
     def create_drf_dataset(
@@ -153,11 +127,6 @@ class DRFWriter:
         millseconds_per_file = int(self.config.get_global()["millseconds_per_file"])
         compression_level = int(self.config.get_global()["compression_level"])
         dtype = np.int32
-
-        # set up top level directory
-        channel_dir = os.path.join(dataset_dir, channel_name)
-        shutil.rmtree(dataset_dir, ignore_errors=True)
-        os.makedirs(channel_dir)
 
         print("Writing Digital RF dataset. This will take a while")
 
@@ -186,6 +155,7 @@ class DRFWriter:
                         for value in metadata["a_d_zero_cal_data"].split(",")
                     ]
                     curr_time_index = 0
+                    og_index = 0
                     samples = np.zeros((metadata["a_d_sample_rate"], 3), dtype=dtype)
                     idx = 0
                     print(f"Processing file {file}")
@@ -198,8 +168,8 @@ class DRFWriter:
                         return False, None, None
                     for line in fp:
                         line = line.strip()
-                        if not line:
-                            break
+                        if not line or line.startswith("#"):
+                            continue
                         elif line.startswith("C"):
                             if line.endswith("V"):
                                 do.rf_write(samples, next_sample=curr_time_index)
@@ -217,8 +187,6 @@ class DRFWriter:
                                 curr_epoch_time * metadata["a_d_sample_rate"]
                                 - start_global_index
                             )
-                        elif line.startswith("#"):
-                            continue
                         else:
                             samples[idx] = [
                                 int(x, 16) + zero_adjust[i]
@@ -245,14 +213,6 @@ class DRFWriter:
         ]
 
         return all(prev_metadata[key] == curr_metadata[key] for key in critical_keys)
-
-    def hex_ascii_to_unsigned_int(self, hex_string):
-        """a function that takes a 4-character 16-bit hex string in ascii format and convert it to an unsigned integer"""
-        # Convert the hex string to an integer
-        int_value = int(hex_string, 16)
-        # Ensure the value is treated as unsigned 16-bit
-        unsigned_int_value = int_value & 0xFFFF
-        return unsigned_int_value
 
 
 def get_metadata(data_file):
