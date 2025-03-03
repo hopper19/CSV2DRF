@@ -4,6 +4,7 @@ import shutil
 import digital_rf as drf
 import pprint
 import datetime
+import logging
 
 BEACON_FREQUENCIES = {
     "WWV2p5": 2.5,
@@ -58,14 +59,9 @@ class G2DRFMetadata(drf.DigitalMetadataWriter):
         Args:
             csv_file (str): Path to the CSV file.
         """
-        try:
-            with open(csv_file, "r") as file:
-                comment_lines = [line.strip("# ").strip() for line in file if line.startswith("#")]
-                self.__parse_header(comment_lines)
-        except FileNotFoundError:
-            print(f"Error: File '{csv_file}' not found.")
-        except Exception as e:
-            print(f"Error: {e}")
+        with open(csv_file, "r") as file:
+            comment_lines = [line.strip("# ").strip() for line in file if line.startswith("#")]
+            self.__parse_header(comment_lines)
 
     def __parse_header(self, lines: list[str]):
         """
@@ -167,6 +163,7 @@ class G2DRFMetadata(drf.DigitalMetadataWriter):
     def update_checksum_meta(self, checksum: str):
         """
         Update the metadata with the given checksum.
+        TODO: example checksum string
 
         Args:
             checksum (str): Checksum string.
