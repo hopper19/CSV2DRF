@@ -124,69 +124,6 @@ class G2DRFMetadata(drf.DigitalMetadataWriter):
 
         self.print()
 
-    def update_hourly_meta(self, line):
-        line = line.lstrip("#").strip()
-        if line.startswith("MetaData") or not line:
-            print("Skipping header line", line)
-            return
-        if line.startswith(","):
-            csv_parts = line.lstrip(",").split(",")
-
-            dt = datetime.datetime.fromisoformat(csv_parts[0].replace("Z", "+00:00"))
-            formatted_timestamp = dt.strftime("%Y%m%d%H%M%S")
-            self.metadata["timestamp"] = formatted_timestamp
-
-            self.metadata.update(
-                {
-                    "station_node_number": csv_parts[1],
-                    "grid_square": csv_parts[2],
-                    "lat": float(csv_parts[3]),
-                    "long": float(csv_parts[4]),
-                    "elev": float(csv_parts[5]),
-                    "city_state": csv_parts[6],
-                    "radio": csv_parts[7],
-                }
-            )
-        else:
-            print(line)
-            match = re.match(r"(.+?)\s{2,}(.+)", line)
-            if match:
-                key, value = match.groups()
-
-                # Convert some values to appropriate data types
-                if "," in value and not any(
-                    c.isalpha() for c in value
-                ):  # Convert to list if numeric and comma-separated
-                    value = [v.strip() for v in value.split(",")]
-                elif value.replace(".", "", 1).isdigit():  # Convert numeric values
-                    value = float(value) if "." in value else int(value)
-
-                # Convert key to snake_case for consistency
-                key = key.lower().replace(" ", "_").replace("/", "").strip()
-                self.metadata[key] = value
-
-            if "lat,_lon,_elv" in self.metadata:
-                del self.metadata["lat,_lon,_elv"]
-            if "gps_fix,pdop" in self.metadata:
-                # split into two key-pairs
-                gps_fix, pdop = self.metadata["gps_fix,pdop"]
-                self.metadata["gps_fix"] = int(gps_fix)
-                self.metadata["pdop"] = float(pdop)
-                del self.metadata["gps_fix,pdop"]
-            if "rfdecksn,_logicctrlrsn" in self.metadata:
-                rfdecksn, logicctrlrssn = self.metadata["rfdecksn,_logicctrlrsn"]
-                self.metadata["rfdecksn"] = rfdecksn
-                self.metadata["logicctrlrsn"] = logicctrlrssn
-                del self.metadata["rfdecksn,_logicctrlrsn"]
-
-            center_frequencies = [
-                float(BEACON_FREQUENCIES[self.metadata[key]])
-                for key in self.metadata
-                if key.startswith("beacon_")
-                and self.metadata[key] in BEACON_FREQUENCIES
-            ]
-            self.metadata["center_frequencies"] = center_frequencies
-
     def write_full(self, index):
         self.write(index, self.metadata)
 
@@ -239,8 +176,7 @@ if __name__ == "__main__":
         "/home/cuong/drive/GRAPE2-SFTP/grape2/AB1XB/Srawdata/2024-04-08T000000Z_N0001002_RAWDATA.csv"
     )
     with open(
-        "/home/cuong/drive/GRAPE2-SFTP/grape2/AB1XB/Srawdata/2024-04-08T000000Z_N0001002_RAWDATA.csv",
-        "r",
+        "/home/cuong/drive/GRAPE2-SFTP/grape2/AB1XB/Srawdata/2024-04-08T000000Z_N0001002_RAWDATA.csv"
     ) as file:
         date = "2024-04-08"
         start_time = int(
@@ -253,9 +189,10 @@ if __name__ == "__main__":
         for line in file:
             line = line.strip()
             if line.startswith("T"):
-                start_global_index = int(
-                    start_time * metadata.metadata["ad_sample_rate"]
-                )
+                if first_block:
+                    start_global_index = int(
+                        start_time * metadata.metadata["ad_sample_rate"]
+                    )
                 metadata.update_timestamp_meta(line)
             elif line.startswith("C"):
                 metadata.update_checksum_meta(line)
