@@ -1,3 +1,4 @@
+from tracemalloc import start
 import re, os, uuid
 import shutil
 import digital_rf as drf
@@ -27,11 +28,17 @@ class G2DRFMetadata(drf.DigitalMetadataWriter):
         fs: int,
         uuid_str=None,
     ):
-        self.metadata = {}
-        if uuid_str is not None:
-            self.metadata["uuid"] = uuid_str
-        else:
-            self.metadata["uuid"] = uuid.uuid4().hex
+        """
+        Initialize the G2DRFMetadata object.
+
+        Args:
+            dir (str): Directory for metadata storage.
+            subdir_cadence (int): Subdirectory cadence.
+            file_cadence_secs (int): File cadence in seconds.
+            fs (int): Sample rate numerator.
+            uuid_str (str, optional): UUID string. Defaults to None.
+        """
+        self.metadata = {"uuid": uuid_str or uuid.uuid4().hex}
         shutil.rmtree(dir, ignore_errors=True)
         os.makedirs(dir)
 
@@ -45,30 +52,46 @@ class G2DRFMetadata(drf.DigitalMetadataWriter):
         )
 
     def extract_header(self, csv_file: str):
-        comment_lines = []
+        """
+        Extract and parse the header from the given CSV file.
+
+        Args:
+            csv_file (str): Path to the CSV file.
+        """
         try:
             with open(csv_file, "r") as file:
-                for line in file:
-                    if line.startswith("#"):
-                        comment_lines.append(line.strip("# ").strip())
-                    else:
-                        break
-                self.parse_header(comment_lines)
+                comment_lines = [line.strip("# ").strip() for line in file if line.startswith("#")]
+                self.__parse_header(comment_lines)
         except FileNotFoundError:
             print(f"Error: File '{csv_file}' not found.")
         except Exception as e:
             print(f"Error: {e}")
 
-    def parse_header(self, lines):
-        # Process the first line if it's CSV-style metadata
-        csv_parts = lines[0].lstrip("#,").split(",")
+    def __parse_header(self, lines: list[str]):
+        """
+        Parse the header lines to extract metadata.
 
+        Args:
+            lines (list[str]): List of header lines.
+        """
+        self.__process_first_metadata(lines[0])
+        self.__process_key_value_pairs(lines[2:])  # Skip the first two lines
+        self.__cleanup_metadata()
+        self.__calculate_center_frequencies()
+        self.print()
+
+    def __process_first_metadata(self, line: str):
+        """
+        Process the first line of metadata to extract initial values.
+
+        Args:
+            line (str): First line of metadata.
+        """
+        csv_parts = line.lstrip("#,").split(",")
         dt = datetime.datetime.fromisoformat(csv_parts[0].replace("Z", "+00:00"))
-        formatted_timestamp = dt.strftime("%Y%m%d%H%M%S")
-        self.metadata["timestamp"] = formatted_timestamp
-
         self.metadata.update(
             {
+                "timestamp": dt.strftime("%Y%m%d%H%M%S"),
                 "station_node_number": csv_parts[1],
                 "grid_square": csv_parts[2],
                 "lat": float(csv_parts[3]),
@@ -78,83 +101,97 @@ class G2DRFMetadata(drf.DigitalMetadataWriter):
                 "radio": csv_parts[7],
             }
         )
-        lines = lines[2:]  # Remove the first line for further processing
 
+    def __process_key_value_pairs(self, lines: list[str]):
+        """
+        Process key-value pairs from the remaining lines of metadata.
+
+        Args:
+            lines (list[str]): List of metadata lines.
+        """
         for line in lines:
             if not line or line.startswith("MetaData"):  # Skip headers
                 continue
-
-            # Match key-value pairs with optional comma-separated values
             match = re.match(r"(.+?)\s{2,}(.+)", line)
             if match:
                 key, value = match.groups()
-
-                # Convert some values to appropriate data types
-                if "," in value and not any(
-                    c.isalpha() for c in value
-                ):  # Convert to list if numeric and comma-separated
+                if "," in value and not any(c.isalpha() for c in value):
                     value = [v.strip() for v in value.split(",")]
-                elif value.replace(".", "", 1).isdigit():  # Convert numeric values
+                elif value.replace(".", "", 1).isdigit():
                     value = float(value) if "." in value else int(value)
-
-                # Convert key to snake_case for consistency
                 key = key.lower().replace(" ", "_").replace("/", "").strip()
                 self.metadata[key] = value
 
-        if "lat,_lon,_elv" in self.metadata:
-            del self.metadata["lat,_lon,_elv"]
-        if "gps_fix,pdop" in self.metadata:
-            # split into two key-pairs
-            gps_fix, pdop = self.metadata["gps_fix,pdop"]
-            self.metadata["gps_fix"] = int(gps_fix)
-            self.metadata["pdop"] = float(pdop)
-            del self.metadata["gps_fix,pdop"]
-        if "rfdecksn,_logicctrlrsn" in self.metadata:
-            rfdecksn, logicctrlrssn = self.metadata["rfdecksn,_logicctrlrsn"]
-            self.metadata["rfdecksn"] = rfdecksn
-            self.metadata["logicctrlrsn"] = logicctrlrssn
-            del self.metadata["rfdecksn,_logicctrlrsn"]
+    def __cleanup_metadata(self):
+        """
+        Clean up and organize the metadata dictionary.
+        """
+        for key in ["lat,_lon,_elv", "gps_fix,pdop", "rfdecksn,_logicctrlrsn"]:
+            if key in self.metadata:
+                values = self.metadata.pop(key)
+                if key == "gps_fix,pdop":
+                    self.metadata["gps_fix"], self.metadata["pdop"] = int(values[0]), float(values[1])
+                elif key == "rfdecksn,_logicctrlrsn":
+                    self.metadata["rfdecksn"], self.metadata["logicctrlrsn"] = values
 
-        center_frequencies = [
+    def __calculate_center_frequencies(self):
+        """
+        Calculate center frequencies based on beacon frequencies.
+        """
+        self.metadata["center_frequencies"] = [
             float(BEACON_FREQUENCIES[self.metadata[key]])
             for key in self.metadata
             if key.startswith("beacon_") and self.metadata[key] in BEACON_FREQUENCIES
         ]
-        self.metadata["center_frequencies"] = center_frequencies
 
-        self.print()
+    def write_full(self, index: int):
+        """
+        Write the full metadata to the specified index.
 
-    def write_full(self, index):
+        Args:
+            index (int): Index to write the metadata.
+        """
         self.write(index, self.metadata)
 
-    def write_secondly(self, index):
-        subset = {
-            "timestamp": self.metadata["timestamp"],
-            "gps_lock": self.metadata["gps_lock"],
-            "gps_fix": self.metadata["gps_fix"],
-            "sat_count": self.metadata["sat_count"],
-            "pdop": self.metadata["pdop"],
-            "verify": self.metadata["verify"],
-        }
+    def write_secondly(self, index: int):
+        """
+        Write a subset of metadata to the specified index.
+
+        Args:
+            index (int): Index to write the metadata.
+        """
+        subset_keys = ["timestamp", "gps_lock", "gps_fix", "sat_count", "pdop", "verify"]
+        subset = {key: self.metadata[key] for key in subset_keys}
         self.write(index, subset)
 
     def update_checksum_meta(self, checksum: str):
-        """Example checksum: C6e81a9b3V"""
+        """
+        Update the metadata with the given checksum.
+
+        Args:
+            checksum (str): Checksum string.
+        """
         self.metadata["checksum"] = checksum[1:-1]
         self.metadata["verify"] = checksum[-1]
 
     def update_timestamp_meta(self, timestamp_str: str):
         """
-        # TYYYYMMDDhhmmssLFSP
+        Update the metadata with the given timestamp string.
+
+        Timestamp format TYYYYMMDDhhmmssLFSP, where:
+
         T: timestamp indicator
+
         YYYYMMDDhhmmss: year-month-day-hour-minute-second
-
-        LFSP: L = GPS locked/unlocked (L/U)
+        
+        LFSP:
+            L = GPS locked/unlocked (L/U)
             F = Fix (1=no fix, 2=2D fix, 3=3D fix)
-
             S = satellite count (hex)
-
             P = Position Dilution of Precision (hex)
+
+        Args:
+            timestamp_str (str): Timestamp string.
         """
         self.metadata.update(
             {
@@ -167,46 +204,39 @@ class G2DRFMetadata(drf.DigitalMetadataWriter):
         )
 
     def print(self):
+        """
+        Print the metadata in a readable format.
+        """
         pprint.pprint(self.metadata)
 
 
 if __name__ == "__main__":
-    metadata = G2DRFMetadata("drfout/metadatatest", 3600, 60, 8000)
-    metadata.extract_header(
-        "/home/cuong/drive/GRAPE2-SFTP/grape2/AB1XB/Srawdata/2024-04-08T000000Z_N0001002_RAWDATA.csv"
-    )
-    with open(
-        "/home/cuong/drive/GRAPE2-SFTP/grape2/AB1XB/Srawdata/2024-04-08T000000Z_N0001002_RAWDATA.csv"
-    ) as file:
-        date = "2024-04-08"
-        start_time = int(
-            datetime.datetime.strptime(date, "%Y-%m-%d")
+    def timestamp_to_epoch(timestamp: str):
+        return int(
+            datetime.datetime.strptime(timestamp, "%Y%m%d%H%M%S")
             .replace(tzinfo=datetime.timezone.utc)
             .timestamp()
         )
+    filename = "/home/cuong/drive/GRAPE2-SFTP/grape2/AB1XB/Srawdata/2024-04-08T000000Z_N0001002_RAWDATA.csv"
+    metadata = G2DRFMetadata("drfout/metadatatest", 3600, 60, 8000)
+    metadata.extract_header(filename)
+    start_time = timestamp_to_epoch(metadata.metadata["timestamp"])
+    with open(filename) as file:
         start_global_index = 0
         first_block = True
+        ad_sample_rate = metadata.metadata["ad_sample_rate"]
         for line in file:
             line = line.strip()
             if line.startswith("T"):
                 if first_block:
-                    start_global_index = int(
-                        start_time * metadata.metadata["ad_sample_rate"]
-                    )
+                    start_global_index = int(start_time * ad_sample_rate)
                 metadata.update_timestamp_meta(line)
             elif line.startswith("C"):
                 metadata.update_checksum_meta(line)
-                curr_epoch_time = int(
-                    datetime.datetime.strptime(
-                        metadata.metadata["timestamp"], "%Y%m%d%H%M%S"
-                    )
-                    .replace(tzinfo=datetime.timezone.utc)
-                    .timestamp()
-                )
+                curr_epoch_time = timestamp_to_epoch(metadata.metadata["timestamp"])
+                curr_index = int(curr_epoch_time * ad_sample_rate)
                 if first_block:
-                    metadata.write_full(curr_epoch_time * metadata.metadata["ad_sample_rate"])
+                    metadata.write_full(curr_index)
                     first_block = False
                 else:
-                    metadata.write_secondly(curr_epoch_time * metadata.metadata["ad_sample_rate"])
-            else:
-                continue
+                    metadata.write_secondly(curr_index)
