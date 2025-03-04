@@ -60,7 +60,11 @@ class G2DRFMetadata(drf.DigitalMetadataWriter):
             csv_file (str): Path to the CSV file.
         """
         with open(csv_file, "r") as file:
-            comment_lines = [line.strip("# ").strip() for line in file if line.startswith("#")]
+            comment_lines = [
+                line.strip().lstrip("#").strip()
+                for line in file
+                if line.startswith("#")
+            ]
             self.__parse_header(comment_lines)
 
     def __parse_header(self, lines: list[str]):
@@ -111,8 +115,8 @@ class G2DRFMetadata(drf.DigitalMetadataWriter):
             match = re.match(r"(.+?)\s{2,}(.+)", line)
             if match:
                 key, value = match.groups()
-                if "," in value and not any(c.isalpha() for c in value):
-                    value = [v.strip() for v in value.split(",")]
+                if "," in value:
+                    value = value.split(",")
                 elif value.replace(".", "", 1).isdigit():
                     value = float(value) if "." in value else int(value)
                 key = key.lower().replace(" ", "_").replace("/", "").strip()
@@ -120,24 +124,35 @@ class G2DRFMetadata(drf.DigitalMetadataWriter):
 
     def __cleanup_metadata(self):
         """
-        Clean up and organize the metadata dictionary.
+        Clean up, ensure appropriate data types, and organize the metadata dictionary.
         """
         for key in ["lat,_lon,_elv", "gps_fix,pdop", "rfdecksn,_logicctrlrsn"]:
             if key in self.metadata:
                 values = self.metadata.pop(key)
                 if key == "gps_fix,pdop":
-                    self.metadata["gps_fix"], self.metadata["pdop"] = int(values[0]), float(values[1])
+                    self.metadata["gps_fix"], self.metadata["pdop"] = int(
+                        values[0]
+                    ), float(values[1])
                 elif key == "rfdecksn,_logicctrlrsn":
-                    self.metadata["rfdecksn"], self.metadata["logicctrlrsn"] = values
+                    self.metadata["rfdecksn"], self.metadata["logicctrlrsn"] = [
+                        int(x) for x in values
+                    ]
+        if "ad_zero_cal_data" in self.metadata:
+            self.metadata["ad_zero_cal_data"] = [
+                int(x, 16) for x in self.metadata["ad_zero_cal_data"]
+            ]
 
     def __calculate_center_frequencies(self):
         """
         Calculate center frequencies based on beacon frequencies.
         """
+        self.metadata["beacons"] = [
+            self.metadata.pop(key)
+            for key in sorted(self.metadata.keys())
+            if key.startswith("beacon_")
+        ]
         self.metadata["center_frequencies"] = [
-            float(BEACON_FREQUENCIES[self.metadata[key]])
-            for key in self.metadata
-            if key.startswith("beacon_") and self.metadata[key] in BEACON_FREQUENCIES
+            float(BEACON_FREQUENCIES[beacon]) for beacon in self.metadata["beacons"]
         ]
 
     def write_full(self, index: int):
@@ -156,7 +171,15 @@ class G2DRFMetadata(drf.DigitalMetadataWriter):
         Args:
             index (int): Index to write the metadata.
         """
-        subset_keys = ["timestamp", "gps_lock", "gps_fix", "sat_count", "pdop", "verify"]
+        subset_keys = [
+            "timestamp",
+            "gps_lock",
+            "gps_fix",
+            "sat_count",
+            "pdop",
+            "verify",
+            "checksum"
+        ]
         subset = {key: self.metadata[key] for key in subset_keys}
         self.write(index, subset)
 
@@ -180,7 +203,7 @@ class G2DRFMetadata(drf.DigitalMetadataWriter):
         T: timestamp indicator
 
         YYYYMMDDhhmmss: year-month-day-hour-minute-second
-        
+
         LFSP:
             L = GPS locked/unlocked (L/U)
             F = Fix (1=no fix, 2=2D fix, 3=3D fix)
@@ -206,18 +229,28 @@ class G2DRFMetadata(drf.DigitalMetadataWriter):
         """
         pprint.pprint(self.metadata)
 
+    def timestamp_to_epoch(self, timestamp: str):
+        """
+        Convert a UTC timestamp string to epoch time.
 
-if __name__ == "__main__":
-    def timestamp_to_epoch(timestamp: str):
+        Args:
+            timestamp (str): UTC timestamp string. Format: YYYYMMDDhhmmss.
+
+        Returns:
+            int: Epoch time.
+        """
         return int(
             datetime.datetime.strptime(timestamp, "%Y%m%d%H%M%S")
             .replace(tzinfo=datetime.timezone.utc)
             .timestamp()
         )
+
+
+if __name__ == "__main__":
     filename = "/home/cuong/drive/GRAPE2-SFTP/grape2/AB1XB/Srawdata/2024-04-08T000000Z_N0001002_RAWDATA.csv"
     metadata = G2DRFMetadata("drfout/metadatatest", 3600, 60, 8000)
     metadata.extract_header(filename)
-    start_time = timestamp_to_epoch(metadata.metadata["timestamp"])
+    start_time = metadata.timestamp_to_epoch(metadata.metadata["timestamp"])
     with open(filename) as file:
         start_global_index = 0
         first_block = True
@@ -230,7 +263,9 @@ if __name__ == "__main__":
                 metadata.update_timestamp_meta(line)
             elif line.startswith("C"):
                 metadata.update_checksum_meta(line)
-                curr_epoch_time = timestamp_to_epoch(metadata.metadata["timestamp"])
+                curr_epoch_time = metadata.timestamp_to_epoch(
+                    metadata.metadata["timestamp"]
+                )
                 curr_index = int(curr_epoch_time * ad_sample_rate)
                 if first_block:
                     metadata.write_full(curr_index)
