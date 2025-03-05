@@ -1,0 +1,33 @@
+#,2024-04-08T00:00:00Z,N0001002,FN42el,42.498340,-71.590725,128.6,Harvard MA,Grape 2
+######################################################
+# MetaData for Grape Gen 2 Station
+#
+# Station Node Number      N0001002
+# Callsign                 AB1XB
+# Grid Square              FN42el
+# Lat, Lon, Elv            42.498340,-71.590725,128.6
+# GPS Fix,PDOP             3,1.9
+# GPS Acquisition on       2024-04-06 21:23:43.740476
+# City State               Harvard MA
+# Radio                    Grape 2
+# RFGain                   10
+# RadioID1                 G2R1
+# RadioID2                 G2R2
+# RadioID3                 G2R3
+# Antenna                  MLA-30+ active wideband loop
+# Frequency Standard       LB GPSDO
+# System Info              RasPi4B/8GB, RasPi OS Bullseye 6.1.21
+# RFDeckSN, LogicCtrlrSN   102,1002
+# Data Controller Version  0.7.16
+# Picorun Version          0.5.17
+# magdata Version          0.0.4
+# PSWSsetup Version        2.27
+#
+# Beacon 1 Now Decoded     WWV5
+# Beacon 2 Now Decoded     WWV10
+# Beacon 3 Now Decoded     WWV15
+#
+# A/D Sample Rate          8000
+# A/D Zero Cal Data        7ede,7f07,7f2a
+#
+######################################################
