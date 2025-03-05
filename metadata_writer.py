@@ -1,10 +1,16 @@
-from tracemalloc import start
-import re, os, uuid
+"""
+Utility for writing Grape 2 DigitalRF Metadata
+
+# TODO: Investigation: Class needs to know the sample rate before reading any file.
+
+@authors Cuong Nguyen
+"""
+
+import re, os
 import shutil
 import digital_rf as drf
 import pprint
 import datetime
-import logging
 
 BEACON_FREQUENCIES = {
     "WWV2p5": 2.5,
@@ -19,29 +25,19 @@ BEACON_FREQUENCIES = {
 }
 
 
-class G2DRFMetadata(drf.DigitalMetadataWriter):
+class G2DRFMetadataWriter(drf.DigitalMetadataWriter):
 
-    def __init__(
-        self,
-        dir: str,
-        subdir_cadence: int,
-        file_cadence_secs: int,
-        fs: int,
-        uuid_str=None,
-    ):
+    def __init__(self, dir: str | os.PathLike, subdir_cadence: int, file_cadence_secs: int, fs: int):
         """
         Initialize the G2DRFMetadata object.
 
         Args:
-            dir (str): Directory for metadata storage.
+            dir (str | os.PathLike): Directory for metadata storage.
             subdir_cadence (int): Subdirectory cadence.
             file_cadence_secs (int): File cadence in seconds.
             fs (int): Sample rate numerator.
-            uuid_str (str, optional): UUID string. Defaults to None.
         """
-        self.metadata = {"uuid": uuid_str or uuid.uuid4().hex}
-        shutil.rmtree(dir, ignore_errors=True)
-        os.makedirs(dir)
+        self.metadata = {}
 
         super().__init__(
             dir,
@@ -52,7 +48,7 @@ class G2DRFMetadata(drf.DigitalMetadataWriter):
             "metadata",  # file_name
         )
 
-    def extract_header(self, csv_file: str):
+    def extract_header(self, csv_file: str | os.PathLike):
         """
         Extract and parse the header from the given CSV file.
 
@@ -178,7 +174,7 @@ class G2DRFMetadata(drf.DigitalMetadataWriter):
             "sat_count",
             "pdop",
             "verify",
-            "checksum"
+            "checksum",
         ]
         subset = {key: self.metadata[key] for key in subset_keys}
         self.write(index, subset)
@@ -186,7 +182,8 @@ class G2DRFMetadata(drf.DigitalMetadataWriter):
     def update_checksum_meta(self, checksum: str):
         """
         Update the metadata with the given checksum.
-        TODO: example checksum string
+
+        Sample checksum string: C87ddb701V
 
         Args:
             checksum (str): Checksum string.
@@ -248,7 +245,10 @@ class G2DRFMetadata(drf.DigitalMetadataWriter):
 
 if __name__ == "__main__":
     filename = "/home/cuong/drive/GRAPE2-SFTP/grape2/AB1XB/Srawdata/2024-04-08T000000Z_N0001002_RAWDATA.csv"
-    metadata = G2DRFMetadata("drfout/metadatatest", 3600, 60, 8000)
+    metadata_dir = "drfout/metadatatest"
+    shutil.rmtree(metadata_dir, ignore_errors=True)
+    os.makedirs(metadata_dir, exist_ok=True)
+    metadata = G2DRFMetadataWriter(metadata_dir, 3600, 60, 8000)
     metadata.extract_header(filename)
     start_time = metadata.timestamp_to_epoch(metadata.metadata["timestamp"])
     with open(filename) as file:

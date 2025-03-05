@@ -1,18 +1,21 @@
 import unittest
-from metadata import G2DRFMetadata as Metadata
+from metadata_writer import G2DRFMetadataWriter as MetaWriter
 import os
 import shutil
 import digital_rf as drf
-import pprint
 import numpy as np
+
+# TODO: add test csv to github
 
 
 class TestG2DRFMetadata(unittest.TestCase):
 
     def setUp(self):
         self.test_dir = "test_metadata_dir"
+        shutil.rmtree(self.test_dir, ignore_errors=True)
+        os.makedirs(self.test_dir, exist_ok=True)
         self.test_csv = "test.csv"
-        self.metadata = Metadata(self.test_dir, 3600, 60, 8000)
+        self.metadata = MetaWriter(self.test_dir, 3600, 60, 8000)
         self.expected_metadata = {
             "ad_sample_rate": 8000,
             "ad_zero_cal_data": [0x7EDE, 0x7F07, 0x7F2A],
@@ -85,10 +88,6 @@ class TestG2DRFMetadata(unittest.TestCase):
         if os.path.exists(self.test_csv):
             os.remove(self.test_csv)
 
-    def test_initialization(self):
-        self.assertTrue(os.path.exists(self.test_dir))
-        self.assertIn("uuid", self.metadata.metadata)
-
     def test_extract_header(self):
         self.metadata.extract_header(self.test_csv)
         for key, value in self.expected_metadata.items():
@@ -117,6 +116,7 @@ class TestG2DRFMetadata(unittest.TestCase):
 
         reader = drf.DigitalMetadataReader(self.test_dir)
         bounds = reader.get_bounds()
+        print(reader.read_latest())
         read_metadata = reader.read_latest()[bounds[0]]
 
         for key, expected_value in self.metadata.metadata.items():
