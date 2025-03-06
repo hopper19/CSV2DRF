@@ -8,7 +8,7 @@ import polars as pl
 import datetime
 
 # TODO: extract header
-version = "3.0"
+version = "4.0"
 date = "2024-04-08"
 fs = 8000
 start_global_index = int(
@@ -46,11 +46,8 @@ drw = drf.DigitalRFWriter(
 type_map = {
     "timestamp": "S14",
     "gps_lock": "S1",
-    "gps_fix": "uint8",
-    "sat_count": "uint8",
-    "pdop": "uint8",
     "checksum": "S8",
-    "verify": "S1"
+    "verify": "S1",
 }
 search_pattern = os.path.join("/home/cuong/drive/GRAPE2-SFTP/grape2/AB1XB/Srawdata", "2024-04-08*.csv")
 for file in sorted(glob.glob(search_pattern)):
@@ -68,11 +65,9 @@ for file in sorted(glob.glob(search_pattern)):
     epochs = meta["timestamp"].str.strptime(pl.Datetime, format="%Y%m%d%H%M%S").dt.epoch(time_unit='s')
     samples = epochs * fs
     dmw.write(samples.to_list(), meta_dict)
-    if len(samples) == 3600:  # no gaps
+    if len(epochs) == 3600:  # no gaps
         drw.rf_write(data)
     else:
         global_sample_arr = samples - start_global_index
-        block_sample_arr = np.arange(len(samples)) * fs
+        block_sample_arr = np.arange(len(epochs)) * fs
         drw.rf_write_blocks(data, global_sample_arr, block_sample_arr)
-    
-    break

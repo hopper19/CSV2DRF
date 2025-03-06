@@ -49,7 +49,7 @@ def parse_file(file: str):
         .with_columns([
             pl.first().str.slice(1, 14).alias("timestamp"),
             pl.first().str.slice(15, 1).alias("gps_lock"),
-            pl.first().str.slice(16, 1).alias("gps_fix"),
+            pl.first().str.slice(16, 1).cast(pl.UInt8).alias("gps_fix"),
             pl.first().str.slice(17, 1).str.to_integer(base=16).cast(pl.UInt8).alias("sat_count"),
             pl.first().str.slice(18, 1).str.to_integer(base=16).cast(pl.UInt8).alias("pdop")
         ])
@@ -65,10 +65,6 @@ def parse_file(file: str):
         .select(["checksum", "verify"])
     ))
     return samples.drop_nulls().select(pl.all().str.to_integer(base=16).cast(pl.Int32)).collect(), pl.concat([timestamp, checksum], how="horizontal").collect()
-
-data, meta = parse_file(full_file)
-print(data.shape, meta.shape)
-print(data.head(5), meta.head(5))
 
 # meta = extract_metadata(full_file)
 # meta_dict = {
