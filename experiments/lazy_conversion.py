@@ -8,7 +8,7 @@ import polars as pl
 import datetime
 
 # TODO: extract header
-version = "4.0"
+version = "5.0"
 date = "2024-04-08"
 fs = 8000
 start_global_index = int(
@@ -40,7 +40,8 @@ drw = drf.DigitalRFWriter(
     num_subchannels=3,
     compression_level=0,
     checksum=True,
-    marching_periods=False
+    marching_periods=False,
+    # is_continuous=False
 )
 
 type_map = {
@@ -50,21 +51,42 @@ type_map = {
     "verify": "S1",
 }
 search_pattern = os.path.join("/home/cuong/drive/GRAPE2-SFTP/grape2/AB1XB/Srawdata", "2024-04-08*.csv")
-for file in sorted(glob.glob(search_pattern)):
-    print(f"Processing {file}")
-    data, meta = parse_file(file)
+# for file in sorted(glob.glob(search_pattern)):
+#     print(f"Processing {file}")
+#     data, meta = parse_file(file)
 
-    # add header meta to first block
+#     # add header meta to first block
+#     meta_dict = {}
+#     for col in meta.columns:
+#         arr = meta[col].to_numpy()
+#         if col in type_map:
+#             arr = arr.astype(type_map[col])
+#         meta_dict[col] = arr
+
+#     epochs = meta["timestamp"].str.strptime(pl.Datetime, format="%Y%m%d%H%M%S").dt.epoch(time_unit='s')
+#     samples = epochs * fs
+#     dmw.write(samples.to_list(), meta_dict)
+#     if len(epochs) == 3600:  # no gaps
+#         drw.rf_write(data)
+#     else:
+#         global_sample_arr = samples - start_global_index
+#         block_sample_arr = np.arange(len(epochs)) * fs
+#         drw.rf_write_blocks(data, global_sample_arr, block_sample_arr)
+
+#     data, meta = parse_file(file)
+
+datas, metas = parse_file(search_pattern)
+for data, meta in zip(datas, metas):
     meta_dict = {}
     for col in meta.columns:
         arr = meta[col].to_numpy()
         if col in type_map:
             arr = arr.astype(type_map[col])
         meta_dict[col] = arr
+    print(meta_dict["timestamp"][0])
 
     epochs = meta["timestamp"].str.strptime(pl.Datetime, format="%Y%m%d%H%M%S").dt.epoch(time_unit='s')
     samples = epochs * fs
-    dmw.write(samples.to_list(), meta_dict)
     if len(epochs) == 3600:  # no gaps
         drw.rf_write(data)
     else:
