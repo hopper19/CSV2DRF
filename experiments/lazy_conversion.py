@@ -40,7 +40,8 @@ drw = drf.DigitalRFWriter(
     num_subchannels=3,
     compression_level=0,
     checksum=True,
-    marching_periods=False
+    marching_periods=False,
+    is_continuous=False,
 )
 
 type_map = {
