@@ -8,7 +8,7 @@ import polars as pl
 import datetime
 
 # TODO: extract header
-version = "2.0"
+version = "3.0"
 date = "2024-04-08"
 fs = 8000
 start_global_index = int(
@@ -43,19 +43,28 @@ drw = drf.DigitalRFWriter(
     marching_periods=False
 )
 
+type_map = {
+    "timestamp": "S14",
+    "gps_lock": "S1",
+    "gps_fix": "uint8",
+    "sat_count": "uint8",
+    "pdop": "uint8",
+    "checksum": "S8",
+    "verify": "S1"
+}
 search_pattern = os.path.join("/home/cuong/drive/GRAPE2-SFTP/grape2/AB1XB/Srawdata", "2024-04-08*.csv")
 for file in sorted(glob.glob(search_pattern)):
     print(f"Processing {file}")
     data, meta = parse_file(file)
-    data = data.to_numpy().astype(np.int32)
-    meta_dict = {col: meta[col].to_numpy() for col in meta.columns}
-    meta_dict["timestamp"] = meta_dict["timestamp"].astype("S14")
-    meta_dict["gps_lock"] = meta_dict["gps_lock"].astype("S1")
-    meta_dict["gps_fix"] = meta_dict["gps_fix"].astype("uint8")
-    meta_dict["sat_count"] = meta_dict["sat_count"].astype("uint8")
-    meta_dict["pdop"] = meta_dict["pdop"].astype("uint8")
-    meta_dict["checksum"] = meta_dict["checksum"].astype("S8")
-    meta_dict["verify"] = meta_dict["verify"].astype("S1")
+
+    # add header meta to first block
+    meta_dict = {}
+    for col in meta.columns:
+        arr = meta[col].to_numpy()
+        if col in type_map:
+            arr = arr.astype(type_map[col])
+        meta_dict[col] = arr
+
     epochs = meta["timestamp"].str.strptime(pl.Datetime, format="%Y%m%d%H%M%S").dt.epoch(time_unit='s')
     samples = epochs * fs
     dmw.write(samples.to_list(), meta_dict)
@@ -65,3 +74,5 @@ for file in sorted(glob.glob(search_pattern)):
         global_sample_arr = samples - start_global_index
         block_sample_arr = np.arange(len(samples)) * fs
         drw.rf_write_blocks(data, global_sample_arr, block_sample_arr)
+    
+    break

@@ -11,6 +11,7 @@ full_file = "../samples/full.txt"
 
 # check for errors
 # batch size
+# globbing
 # QUESTION: what does indexing order mean?
 
 # pdf = (
@@ -18,16 +19,20 @@ full_file = "../samples/full.txt"
 #         full_file,
 #         has_header=False,
 #         skip_rows=34,
-#         # infer_schema=False,
+#         infer_schema=False,
+#         # three columns of hex strings
+#         # schema=pl.Schema({"beacon_{i}": pl.String for i in range(3)}),
 #     )
-#     .select(pl.col(pl.String).str.to_integer(base=16, strict=False))  # strict=False if certain strings cannot be converted, they will be replaced with nulls (good for eliminating timestamps and checksums)
+#     .select(pl.all().str.to_integer(base=16, strict=False))  # strict=False if certain strings cannot be converted, they will be replaced with nulls (good for eliminating timestamps and checksums)
 #     .drop_nulls()
 # )
+# print(pdf.head())
+
 ##############################################################################
 # GOOD STUFFF
 def parse_file(file: str):
     samples = (
-        pl.read_csv(
+        pl.scan_csv(
             file,
             schema=pl.Schema({"raw": pl.String}),
             skip_rows=33,
@@ -45,8 +50,8 @@ def parse_file(file: str):
             pl.first().str.slice(1, 14).alias("timestamp"),
             pl.first().str.slice(15, 1).alias("gps_lock"),
             pl.first().str.slice(16, 1).alias("gps_fix"),
-            pl.first().str.slice(17, 1).str.to_integer(base=16).alias("sat_count"),
-            pl.first().str.slice(18, 1).str.to_integer(base=16).alias("pdop")
+            pl.first().str.slice(17, 1).str.to_integer(base=16).cast(pl.UInt8).alias("sat_count"),
+            pl.first().str.slice(18, 1).str.to_integer(base=16).cast(pl.UInt8).alias("pdop")
         ])
         .select(["timestamp", "gps_lock", "gps_fix", "sat_count", "pdop"])
     )
@@ -59,7 +64,11 @@ def parse_file(file: str):
         ])
         .select(["checksum", "verify"])
     ))
-    return samples.drop_nulls().select(pl.all().str.to_integer(base=16)), pl.concat([timestamp, checksum], how="horizontal")
+    return samples.drop_nulls().select(pl.all().str.to_integer(base=16).cast(pl.Int32)).collect(), pl.concat([timestamp, checksum], how="horizontal").collect()
+
+data, meta = parse_file(full_file)
+print(data.shape, meta.shape)
+print(data.head(5), meta.head(5))
 
 # meta = extract_metadata(full_file)
 # meta_dict = {
