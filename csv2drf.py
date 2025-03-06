@@ -101,7 +101,7 @@ class CSV2DRFConverter:
                 self.meta_writer.update_checksum_meta(line)
                 if first_daily_block:
                     self.meta_writer.write_full(curr_time_index)
-                    self.data_writer.update_zero_cal()
+                    # self.data_writer.update_zero_cal()
                     first_daily_block = False
                 else:
                     self.meta_writer.write_secondly(curr_time_index)

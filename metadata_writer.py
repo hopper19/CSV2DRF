@@ -84,10 +84,11 @@ class G2DRFMetadataWriter(drf.DigitalMetadataWriter):
             line (str): First line of metadata.
         """
         csv_parts = line.lstrip("#,").split(",")
-        dt = datetime.datetime.fromisoformat(csv_parts[0].replace("Z", "+00:00"))
         self.metadata.update(
             {
-                "timestamp": dt.strftime("%Y%m%d%H%M%S"),
+                "timestamp": datetime.datetime.fromisoformat(
+                    csv_parts[0].replace("Z", "+00:00")
+                ).strftime("%Y%m%d%H%M%S"),
                 "station_node_number": csv_parts[1],
                 "grid_square": csv_parts[2],
                 "lat": float(csv_parts[3]),

@@ -71,14 +71,15 @@ class G2DRFDataWriter(drf.DigitalRFWriter):
             self.hex_to_int(np.array(np.char.split(block, sep=",").tolist())).astype(
                 np.int32
             )
-            + self.hourly_zero_cal
+            # + self.hourly_zero_cal
+            + np.array(self.metadata.metadata["ad_zero_cal_data"]).astype(np.int32)
         )
     
     def write_block(self, block: List[str], next_sample: int):
-        if self.hourly_zero_cal is None:
-            self.update_zero_cal()
-            raise ValueError(
-                "Zero calibration data not set. You must call update_zero_cal() "
-                "at the start of every new file before writing data."
-            )
-        self.rf_write(self.__process_data_block(block), next_sample=next_sample)
+        # if self.hourly_zero_cal is None:
+        #     self.update_zero_cal()
+        #     raise ValueError(
+        #         "Zero calibration data not set. You must call update_zero_cal() "
+        #         "at the start of every new file before writing data."
+        #     )
+        super().rf_write(self.__process_data_block(block), next_sample=next_sample)
