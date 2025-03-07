@@ -52,14 +52,14 @@ class CSV2DRFConverter:
         if not self.input_files:
             raise Exception(f"No files found for {date}")
         self.metadata = {}
-        self.__extract_header(self.input_files[0])
+        self.__extract_meta_from_header(self.input_files[0])
         print(self.metadata)
-        self.start_global_index = self.__get_first_epoch(self.input_files[0]) * self.metadata["ad_sample_rate"]
+        self.start_global_index = self.__calculate_start_global_index(self.input_files[0])
 
-        self.obs_dir = os.path.join(output_dir, "OBS" + date + "T00-00")
-        shutil.rmtree(self.obs_dir, ignore_errors=True)
+        obs_dir = os.path.join(output_dir, "OBS" + date + "T00-00")
+        shutil.rmtree(obs_dir, ignore_errors=True)
 
-        channel_dir = os.path.join(self.obs_dir, "ch0")
+        channel_dir = os.path.join(obs_dir, "ch0")
         os.makedirs(channel_dir, exist_ok=True)
 
         metadata_dir = os.path.join(channel_dir, "metadata")
@@ -95,19 +95,23 @@ class CSV2DRFConverter:
         )
 
     def run(self):
+        type_map = {
+            "timestamp": "S14",
+            "gps_lock": "S1",
+            "checksum": "S8",
+            "verify": "S1",
+        }
         for file in self.input_files:
             print(f"Processing {os.path.basename(file)}")
+            self.__extract_meta_from_header(file)
             data, meta = self.__parse_file(file)
-            epochs = meta["timestamp"].str.strptime(pl.Datetime, format="%Y%m%d%H%M%S").dt.epoch(time_unit='s')
-            samples = epochs * self.metadata["ad_sample_rate"]
-
+            samples = (
+                meta["timestamp"]
+                .str.strptime(pl.Datetime, format="%Y%m%d%H%M%S")
+                .dt.epoch(time_unit="s")
+                * self.metadata["ad_sample_rate"]
+            )
             self.metadata.update(meta.row(0, named=True))
-            type_map = {
-                "timestamp": "S14",
-                "gps_lock": "S1",
-                "checksum": "S8",
-                "verify": "S1",
-            }
             meta_dict = {}
             for col in meta.columns:
                 arr = meta[col].to_numpy()[1:]  # first row was be written "manually"
@@ -115,13 +119,13 @@ class CSV2DRFConverter:
                     arr = arr.astype(type_map[col])
                 meta_dict[col] = arr
             self.meta_writer.write(samples[0], self.metadata)
-            self.meta_writer.write(samples[1:].to_list(), meta_dict)
+            self.meta_writer.write(samples[1:], meta_dict) 
             # TEST: performance when using ONLY write blocks
-            if len(epochs) == 3600:  # no gaps
+            if len(samples) == 3600:  # no gaps
                 self.data_writer.rf_write(data)
             else:
                 global_sample_arr = samples - self.start_global_index
-                block_sample_arr = np.arange(len(epochs)) * self.metadata["ad_sample_rate"]
+                block_sample_arr = np.arange(len(samples)) * self.metadata["ad_sample_rate"]
                 self.data_writer.rf_write_blocks(data, global_sample_arr, block_sample_arr)
 
     def __parse_file(self, file: str):
@@ -131,6 +135,7 @@ class CSV2DRFConverter:
             comment_prefix="#",
             has_header=False
         )
+        uncal_data = samples.drop_nulls().select(pl.all().str.to_integer(base=16).cast(pl.Int32))
         meta_row = samples.filter(pl.any_horizontal(pl.all().is_null())).select(pl.first())
         timestamp = (
             meta_row
@@ -154,83 +159,73 @@ class CSV2DRFConverter:
             .select(["checksum", "verify"])
         ))
         return (
-            samples.drop_nulls().select(pl.all().str.to_integer(base=16).cast(pl.Int32)).collect(),
+            uncal_data.with_columns(
+                [
+                    pl.col(name) + offset
+                    for name, offset in zip(
+                        uncal_data.collect_schema().names(),
+                        self.metadata["ad_zero_cal_data"],
+                    )
+                ]
+            ).collect(),
             pl.concat([timestamp, checksum], how="horizontal").collect(),
         )
 
-    def __get_first_epoch(self, filepath):
-        epoch = 0
+    def __calculate_start_global_index(self, filepath):
         with open(filepath) as file:
-            for line in file:
-                if line.startswith("T"):
-                    epoch = int(
-                        datetime.datetime.strptime(line[1:15], "%Y%m%d%H%M%S")
-                        .replace(tzinfo=datetime.timezone.utc)
-                        .timestamp()
-                    )
-                    break
-        return epoch
+            line = file.readline()
+            while line.startswith("#"):
+                line = file.readline()
+            return (
+                datetime.datetime.strptime(line[1:15], "%Y%m%d%H%M%S")
+                .replace(tzinfo=datetime.timezone.utc)
+                .timestamp()
+                * self.metadata["ad_sample_rate"]
+            )
 
-    def __extract_header(self, csv_file: str | os.PathLike):
+    def __extract_meta_from_header(self, csv_file: str | os.PathLike):
         """
         Extract and parse the header from the given CSV file.
 
         Args:
             csv_file (str): Path to the CSV file.
         """
+        comment_lines = []
         with open(csv_file, "r") as file:
-            comment_lines = [
-                line.strip().lstrip("#").strip()
-                for line in file
-                if line.startswith("#")
-            ]
-            self.__parse_header(comment_lines)
-
-    def __parse_header(self, lines: list[str]):
-        """
-        Parse the header lines to extract metadata.
-
-        Args:
-            lines (list[str]): List of header lines.
-        """
-        self.__process_first_metadata(lines[0])
-        self.__process_key_value_pairs(lines[2:])  # Skip the first two lines
-        self.__cleanup_metadata()
-        self.__calculate_center_frequencies()
+            line = file.readline()
+            while line.startswith("#"):
+                line = line.lstrip("#").strip()
+                comment_lines.append(line)    
+                line = file.readline()
+            self.__extract_metadata(comment_lines)
+            self.__cleanup_metadata()
+            self.__calculate_center_frequencies()
         # pprint.pprint(self.metadata)
 
-    def __process_first_metadata(self, line: str):
+    def __extract_metadata(self, lines: list[str]):
         """
-        Process the first line of metadata to extract initial values.
+        Extract metadata from the header lines
 
         Args:
             line (str): First line of metadata.
         """
-        csv_parts = line.lstrip("#,").split(",")
+        csv_parts = lines[0].split(",")
         self.metadata.update(
             {
                 "timestamp": datetime.datetime.fromisoformat(
-                    csv_parts[0].replace("Z", "+00:00")
+                    csv_parts[1].replace("Z", "+00:00")
                 ).strftime("%Y%m%d%H%M%S"),
-                "station_node_number": csv_parts[1],
-                "grid_square": csv_parts[2],
-                "lat": float(csv_parts[3]),
-                "long": float(csv_parts[4]),
-                "elev": float(csv_parts[5]),
-                "city_state": csv_parts[6],
-                "radio": csv_parts[7],
+                "station_node_number": csv_parts[2],
+                "grid_square": csv_parts[3],
+                "lat": float(csv_parts[4]),
+                "long": float(csv_parts[5]),
+                "elev": float(csv_parts[6]),
+                "city_state": csv_parts[7],
+                "radio": csv_parts[8],
             }
-        )
-
-    def __process_key_value_pairs(self, lines: list[str]):
-        """
-        Process key-value pairs from the remaining lines of metadata.
-
-        Args:
-            lines (list[str]): List of metadata lines.
-        """
-        for line in lines:
-            if not line or line.startswith("MetaData"):  # Skip headers
+        ) 
+        for line in lines[1:]:
+            if not line or line.startswith("MetaData"):
                 continue
             match = re.match(r"(.+?)\s{2,}(.+)", line)
             if match:
@@ -259,7 +254,7 @@ class CSV2DRFConverter:
                     ]
         if "ad_zero_cal_data" in self.metadata:
             self.metadata["ad_zero_cal_data"] = [
-                int(x, 16) for x in self.metadata["ad_zero_cal_data"]
+                (int(x, 16) - 0x8000) for x in self.metadata["ad_zero_cal_data"]
             ]
 
     def __calculate_center_frequencies(self):
@@ -276,7 +271,7 @@ class CSV2DRFConverter:
         ]
 
 if __name__ == "__main__":
-    version = "4.2"
+    version = "4.3"
 
     parser = argparse.ArgumentParser(description="Grape 2 CSV to DRF Converter")
     parser.add_argument(
