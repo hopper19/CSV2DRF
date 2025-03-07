@@ -1,0 +1,14 @@
+{
+    "python.analysis.typeCheckingMode": "standard",
+    "python.analysis.autoImportCompletions": false,
+    "python.testing.unittestArgs": [
+        "-v",
+        "-s",
+        ".",
+        "-p",
+        "test_*.py"
+    ],
+    "python.testing.pytestEnabled": false,
+    "python.testing.unittestEnabled": true,
+    "livePreview.defaultPreviewPath": "/memray/csv2drf_v4_3.html"
+}
