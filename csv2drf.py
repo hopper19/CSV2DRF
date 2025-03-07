@@ -2,7 +2,7 @@
 Utility to convert G2 raw data from CSV to DRF
 
 # TODO: test source data missing the first three data blocks of the day
-# Command: 
+# Command: python csv2drf.py -i ~/drive/GRAPE2-SFTP/grape2/AB1XB/Srawdata/ -o drfout/ 2024-04-08
 
 @author Cuong Nguyen
 """
@@ -13,10 +13,8 @@ import re, os, sys, glob, datetime
 import argparse
 import digital_rf as drf
 from configparser import ConfigParser
-from matplotlib.pylab import f
 import polars as pl
 import numpy as np
-from zmq import has
 
 BEACON_FREQUENCIES = {
     "WWV2p5": 2.5,
@@ -53,7 +51,7 @@ class CSV2DRFConverter:
             raise Exception(f"No files found for {date}")
         self.metadata = {}
         self.__extract_meta_from_header(self.input_files[0])
-        print(self.metadata)
+        # print(self.metadata)
         self.start_global_index = self.__calculate_start_global_index(self.input_files[0])
 
         obs_dir = os.path.join(output_dir, "OBS" + date + "T00-00")
@@ -102,7 +100,7 @@ class CSV2DRFConverter:
             "verify": "S1",
         }
         for file in self.input_files:
-            print(f"Processing {os.path.basename(file)}")
+            # print(f"Processing {os.path.basename(file)}")
             self.__extract_meta_from_header(file)
             data, meta = self.__parse_file(file)
             samples = (
