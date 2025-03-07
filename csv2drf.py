@@ -2,6 +2,7 @@
 Utility to convert G2 raw data from CSV to DRF
 
 # TODO: test source data missing the first three data blocks of the day
+# Command: 
 
 @author Cuong Nguyen
 """
@@ -50,7 +51,7 @@ class CSV2DRFConverter:
             raise Exception(f"No files found for {date}")
         self.metadata = {}
         self.__extract_header(self.input_files[0])
-        pprint.pprint(self.metadata)
+        print(self.metadata)
         self.start_global_index = self.__get_first_epoch(self.input_files[0]) * self.metadata["ad_sample_rate"]
 
         self.obs_dir = os.path.join(output_dir, "OBS" + date + "T00-00")
@@ -95,8 +96,10 @@ class CSV2DRFConverter:
         for file in self.input_files:
             print(f"Processing {os.path.basename(file)}")
             data, meta = self.__parse_file(file)
+            epochs = meta["timestamp"].str.strptime(pl.Datetime, format="%Y%m%d%H%M%S").dt.epoch(time_unit='s')
+            samples = epochs * self.metadata["ad_sample_rate"]
 
-            # BUG: final size DOUBLED if adding header meta to first block
+            self.metadata.update(meta.row(0, named=True))
             type_map = {
                 "timestamp": "S14",
                 "gps_lock": "S1",
@@ -105,16 +108,10 @@ class CSV2DRFConverter:
             }
             meta_dict = {}
             for col in meta.columns:
-                arr = meta[col].to_numpy()
+                arr = meta[col].to_numpy()[1:]  # first row was be written "manually"
                 if col in type_map:
                     arr = arr.astype(type_map[col])
                 meta_dict[col] = arr
-
-            epochs = meta["timestamp"].str.strptime(pl.Datetime, format="%Y%m%d%H%M%S").dt.epoch(time_unit='s')
-            samples = epochs * self.metadata["ad_sample_rate"]
-            self.metadata.update(
-                dict(zip(meta.columns, meta.row(0)))
-            )
             self.meta_writer.write(samples[0], self.metadata)
             self.meta_writer.write(samples[1:].to_list(), meta_dict)
             # TEST: performance when using ONLY write blocks
@@ -283,7 +280,7 @@ class CSV2DRFConverter:
         ]
 
 if __name__ == "__main__":
-    version = "4.0"
+    version = "4.1"
 
     parser = argparse.ArgumentParser(description="Grape 2 CSV to DRF Converter")
     parser.add_argument(
