@@ -27,6 +27,18 @@ full_file = "../samples/full.txt"
 #     .drop_nulls()
 # )
 # print(pdf.head())
+############################################################3
+# EFFICIENT AND ELEGANT
+samples = (
+    pl.read_csv(
+        full_file,
+        schema=pl.Schema({f"f{i}": pl.String for i in range(3)}),
+        comment_prefix="#",
+        has_header=False,
+    )
+    .drop_nulls()
+    .select(pl.all().str.to_integer(base=16).cast(pl.Int32))
+)
 
 ##############################################################################
 # GOOD STUFFF
@@ -74,7 +86,6 @@ def parse_file(file: str):
 # meta_dict = {col: meta[col].to_numpy() for col in meta.columns}
 # print(meta_dict)
 ##############################################################################
-
 
 
 #######################################################

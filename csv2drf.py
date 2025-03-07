@@ -13,8 +13,10 @@ import re, os, sys, glob, datetime
 import argparse
 import digital_rf as drf
 from configparser import ConfigParser
+from matplotlib.pylab import f
 import polars as pl
 import numpy as np
+from zmq import has
 
 BEACON_FREQUENCIES = {
     "WWV2p5": 2.5,
@@ -123,17 +125,11 @@ class CSV2DRFConverter:
                 self.data_writer.rf_write_blocks(data, global_sample_arr, block_sample_arr)
 
     def __parse_file(self, file: str):
-        samples = (
-            pl.scan_csv(
-                file,
-                schema=pl.Schema({"raw": pl.String}),
-                # TODO: algorithmically figure out how many rows to skip
-                skip_rows=33,
-                has_header=False,
-                separator=chr(0000),
-            )
-            .select(pl.col("raw").str.split_exact(",", 2))
-            .unnest("raw")
+        samples = pl.scan_csv(
+            file,
+            schema=pl.Schema({f"f{i}": pl.String for i in range(3)}),
+            comment_prefix="#",
+            has_header=False
         )
         meta_row = samples.filter(pl.any_horizontal(pl.all().is_null())).select(pl.first())
         timestamp = (
@@ -280,7 +276,7 @@ class CSV2DRFConverter:
         ]
 
 if __name__ == "__main__":
-    version = "4.1"
+    version = "4.2"
 
     parser = argparse.ArgumentParser(description="Grape 2 CSV to DRF Converter")
     parser.add_argument(
