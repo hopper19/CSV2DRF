@@ -1,0 +1,603 @@
+         22296485 function calls (22295808 primitive calls) in 80.078 seconds
+
+   Ordered by: internal time
+
+   ncalls  tottime  percall  cumtime  percall filename:lineno(function)
+   605425   22.662    0.000   27.831    0.000 /home/cuong/drive/code/CSV2DRF/.drfenv/lib/python3.12/site-packages/h5py/_hl/dataset.py:35(make_new_dset)
+       24   11.526    0.480   11.526    0.480 {built-in method digital_rf._py_rf_write_hdf5.rf_write}
+       96   10.762    0.112   10.762    0.112 {method 'collect' of 'builtins.PyLazyFrame' objects}
+   605425    5.943    0.000    7.043    0.000 /home/cuong/drive/code/CSV2DRF/.drfenv/lib/python3.12/site-packages/h5py/_hl/dataset.py:659(__init__)
+       48    5.458    0.114   50.673    1.056 /home/cuong/drive/code/CSV2DRF/.drfenv/lib/python3.12/site-packages/digital_rf/digital_metadata.py:295(_write)
+   605425    4.769    0.000   40.675    0.000 /home/cuong/drive/code/CSV2DRF/.drfenv/lib/python3.12/site-packages/h5py/_hl/group.py:67(create_dataset)
+       24    4.567    0.190    6.064    0.253 {built-in method numpy.ascontiguousarray}
+    86400    1.700    0.000    2.569    0.000 /home/cuong/drive/code/CSV2DRF/.drfenv/lib/python3.12/site-packages/h5py/_hl/group.py:48(create_group)
+       24    1.497    0.062    1.497    0.062 {method 'to_numpy' of 'builtins.PyDataFrame' objects}
+   605425    1.419    0.000    1.514    0.000 /home/cuong/drive/code/CSV2DRF/.drfenv/lib/python3.12/site-packages/h5py/_hl/filters.py:151(fill_dcpl)
+  9454057    1.149    0.000    1.150    0.000 {built-in method builtins.isinstance}
+     2882    0.885    0.000    0.885    0.000 {built-in method posix.unlink}
+   605425    0.869    0.000    0.869    0.000 /home/cuong/drive/code/CSV2DRF/.drfenv/lib/python3.12/site-packages/h5py/_hl/filters.py:309(get_filters)
+     1466    0.843    0.001    0.843    0.001 /home/cuong/drive/code/CSV2DRF/.drfenv/lib/python3.12/site-packages/h5py/_hl/files.py:570(close)
+   605437    0.808    0.000    0.808    0.000 {built-in method numpy.asarray}
+   691837    0.639    0.000    1.375    0.000 /home/cuong/drive/code/CSV2DRF/.drfenv/lib/python3.12/site-packages/h5py/_hl/base.py:173(_e)
+   605431    0.616    0.000    2.733    0.000 /home/cuong/drive/code/CSV2DRF/.drfenv/lib/python3.12/site-packages/h5py/_hl/base.py:102(array_for_new_object)
+   605431    0.587    0.000    1.179    0.000 /home/cuong/drive/code/CSV2DRF/.drfenv/lib/python3.12/site-packages/h5py/_hl/base.py:73(guess_dtype)
+    86448    0.437    0.000    4.540    0.000 /home/cuong/drive/code/CSV2DRF/.drfenv/lib/python3.12/site-packages/digital_rf/digital_metadata.py:323(_sample_group_generator)
+  1816363    0.377    0.000    0.377    0.000 {built-in method builtins.any}
+605695/605431    0.331    0.000    0.483    0.000 /home/cuong/drive/code/CSV2DRF/.drfenv/lib/python3.12/site-packages/h5py/_hl/base.py:41(find_item_type)
+    86400    0.331    0.000    0.331    0.000 /home/cuong/drive/code/CSV2DRF/.drfenv/lib/python3.12/site-packages/digital_rf/digital_metadata.py:342(<lambda>)
+    86400    0.320    0.000    0.329    0.000 /home/cuong/drive/code/CSV2DRF/.drfenv/lib/python3.12/site-packages/h5py/_hl/base.py:183(get_lcpl)
+     1466    0.229    0.000    0.240    0.000 /home/cuong/drive/code/CSV2DRF/.drfenv/lib/python3.12/site-packages/h5py/_hl/files.py:215(make_fid)
+   693663    0.219    0.000    0.219    0.000 {method 'encode' of 'str' objects}
+  1304592    0.185    0.000    0.185    0.000 /home/cuong/drive/code/CSV2DRF/.drfenv/lib/python3.12/site-packages/h5py/_hl/base.py:303(id)
+   605425    0.155    0.000    0.155    0.000 {method 'lstrip' of 'bytes' objects}
+    87872    0.142    0.000    0.171    0.000 /home/cuong/drive/code/CSV2DRF/.drfenv/lib/python3.12/site-packages/h5py/_hl/group.py:34(__init__)
+   693297    0.105    0.000    0.105    0.000 /home/cuong/drive/code/CSV2DRF/.drfenv/lib/python3.12/site-packages/h5py/_hl/base.py:336(__init__)
+    87884    0.073    0.000    0.105    0.000 <frozen importlib._bootstrap>:1390(_handle_fromlist)
+   605431    0.069    0.000    0.069    0.000 /home/cuong/drive/code/CSV2DRF/.drfenv/lib/python3.12/site-packages/h5py/_hl/base.py:94(is_float16_dtype)
+        1    0.065    0.065   79.174   79.174 /home/cuong/drive/code/CSV2DRF/csv2drf.py:97(run)
+    87885    0.053    0.000    0.088    0.000 <frozen importlib._bootstrap>:645(parent)
+    87890    0.035    0.000    0.035    0.000 {method 'rpartition' of 'str' objects}
+     1464    0.031    0.000    0.031    0.000 {built-in method utcfromtimestamp}
+     1466    0.031    0.000    0.031    0.000 /home/cuong/drive/code/CSV2DRF/.drfenv/lib/python3.12/site-packages/h5py/_hl/files.py:111(make_fapl)
+    89367    0.023    0.000    0.023    0.000 {built-in method builtins.hasattr}
+     1489    0.013    0.000    0.013    0.000 {method 'strftime' of 'datetime.date' objects}
+     1466    0.012    0.000    0.292    0.000 /home/cuong/drive/code/CSV2DRF/.drfenv/lib/python3.12/site-packages/h5py/_hl/files.py:376(__init__)
+      120    0.012    0.000    0.012    0.000 {method 'astype' of 'numpy.ndarray' objects}
+       24    0.012    0.000    0.012    0.000 {method 'collect_schema' of 'builtins.PyLazyFrame' objects}
+     5916    0.010    0.000    0.017    0.000 <frozen posixpath>:71(join)
+     1518    0.010    0.000    0.010    0.000 {built-in method posix.stat}
+    86400    0.010    0.000    0.010    0.000 /home/cuong/drive/code/CSV2DRF/.drfenv/lib/python3.12/site-packages/h5py/_hl/base.py:167(_lcpl)
+      192    0.008    0.000    0.008    0.000 {method 'to_numpy' of 'builtins.PySeries' objects}
+     51/1    0.004    0.000    0.898    0.898 /usr/lib/python3.12/shutil.py:655(_rmtree_safe_fd)
+     1446    0.003    0.000    0.003    0.000 {method 'search' of 're.Pattern' objects}
+     1466    0.003    0.000    0.846    0.001 /home/cuong/drive/code/CSV2DRF/.drfenv/lib/python3.12/site-packages/h5py/_hl/files.py:595(__exit__)
+       24    0.003    0.000   10.788    0.450 /home/cuong/drive/code/CSV2DRF/csv2drf.py:131(__parse_file)
+     8444    0.002    0.000    0.002    0.000 {method 'startswith' of 'str' objects}
+     2089    0.002    0.000    0.005    0.000 /usr/lib/python3.12/re/__init__.py:280(_compile)
+       25    0.002    0.000    0.005    0.000 /home/cuong/drive/code/CSV2DRF/csv2drf.py:205(__extract_metadata)
+       51    0.002    0.000    0.002    0.000 {built-in method posix.rmdir}
+      504    0.002    0.000    0.004    0.000 /home/cuong/drive/code/CSV2DRF/.drfenv/lib/python3.12/site-packages/polars/functions/lit.py:24(lit)
+     1466    0.002    0.000    0.004    0.000 /home/cuong/drive/code/CSV2DRF/.drfenv/lib/python3.12/site-packages/h5py/_hl/compat.py:11(filename_encode)
+       27    0.002    0.000    0.002    0.000 {built-in method _io.open}
+       27    0.002    0.000    0.002    0.000 {built-in method posix.mkdir}
+       48    0.002    0.000   50.678    1.056 /home/cuong/drive/code/CSV2DRF/.drfenv/lib/python3.12/site-packages/digital_rf/digital_metadata.py:220(write)
+     1441    0.002    0.000    0.007    0.000 /usr/lib/python3.12/re/__init__.py:174(search)
+     5945    0.001    0.000    0.003    0.000 <frozen posixpath>:41(_get_sep)
+       24    0.001    0.000    0.001    0.000 {built-in method new_from_csv}
+       24    0.001    0.000    0.001    0.000 {method 'drop_nulls' of 'builtins.PyLazyFrame' objects}
+     5965    0.001    0.000    0.001    0.000 {method 'endswith' of 'str' objects}
+     1515    0.001    0.000    0.011    0.000 <frozen genericpath>:16(exists)
+        1    0.001    0.001    0.001    0.001 {built-in method digital_rf._py_rf_write_hdf5.init}
+       25    0.001    0.000    0.010    0.000 /home/cuong/drive/code/CSV2DRF/csv2drf.py:186(__extract_meta_from_header)
+     1466    0.001    0.000    0.002    0.000 <frozen os>:812(fsencode)
+     8905    0.001    0.000    0.001    0.000 {built-in method posix.fspath}
+       96    0.001    0.000   10.765    0.112 /home/cuong/drive/code/CSV2DRF/.drfenv/lib/python3.12/site-packages/polars/lazyframe/frame.py:1820(collect)
+      480    0.001    0.000    0.001    0.000 {method 'view' of 'numpy.ndarray' objects}
+     1080    0.001    0.000    0.004    0.000 /home/cuong/drive/code/CSV2DRF/.drfenv/lib/python3.12/site-packages/polars/_utils/parse/expr.py:20(parse_into_expression)
+     2714    0.001    0.000    0.001    0.000 {built-in method __new__ of type object at 0xa43b40}
+       48    0.001    0.000    0.016    0.000 /home/cuong/drive/code/CSV2DRF/.drfenv/lib/python3.12/site-packages/polars/series/utils.py:99(wrapper)
+      312    0.001    0.000    0.001    0.000 <frozen os>:680(__getitem__)
+      884    0.001    0.000    0.001    0.000 {method 'readline' of '_io.TextIOWrapper' objects}
+      576    0.001    0.000    0.001    0.000 /home/cuong/drive/code/CSV2DRF/.drfenv/lib/python3.12/site-packages/polars/dependencies.py:201(_check_for_numpy)
+     1008    0.001    0.000    0.001    0.000 /home/cuong/drive/code/CSV2DRF/.drfenv/lib/python3.12/site-packages/digital_rf/digital_metadata.py:62(_recursive_items)
+     1416    0.001    0.000    0.001    0.000 /home/cuong/drive/code/CSV2DRF/.drfenv/lib/python3.12/site-packages/polars/_utils/wrap.py:24(wrap_expr)
+       96    0.001    0.000    0.001    0.000 {method 'optimization_toggle' of 'builtins.PyLazyFrame' objects}
+1891/1833    0.001    0.000    0.001    0.000 {built-in method builtins.len}
+      757    0.001    0.000    0.001    0.000 {method 'match' of 're.Pattern' objects}
+      504    0.001    0.000    0.001    0.000 {lit}
+       48    0.000    0.000    0.001    0.000 /home/cuong/drive/code/CSV2DRF/.drfenv/lib/python3.12/site-packages/polars/schema.py:91(__init__)
+      144    0.000    0.000    0.001    0.000 /home/cuong/drive/code/CSV2DRF/.drfenv/lib/python3.12/site-packages/polars/_utils/wrap.py:12(wrap_df)
+     1824    0.000    0.000    0.001    0.000 /home/cuong/drive/code/CSV2DRF/.drfenv/lib/python3.12/site-packages/polars/expr/expr.py:121(_from_pyexpr)
+       24    0.000    0.000    6.065    0.253 /home/cuong/drive/code/CSV2DRF/.drfenv/lib/python3.12/site-packages/digital_rf/digital_rf_hdf5.py:688(_cast_input_array)
+     2932    0.000    0.000    0.000    0.000 {method 'is_dir' of 'posix.DirEntry' objects}
+      312    0.000    0.000    0.002    0.000 /home/cuong/drive/code/CSV2DRF/.drfenv/lib/python3.12/site-packages/polars/_utils/parse/expr.py:108(_parse_positional_inputs)
+       24    0.000    0.000   17.592    0.733 /home/cuong/drive/code/CSV2DRF/.drfenv/lib/python3.12/site-packages/digital_rf/digital_rf_hdf5.py:439(rf_write)
+     1815    0.000    0.000    0.000    0.000 {method 'replace' of 'str' objects}
+       24    0.000    0.000    0.000    0.000 {concat_lf_horizontal}
+      505    0.000    0.000    0.001    0.000 {built-in method _abc._abc_instancecheck}
+      384    0.000    0.000    0.001    0.000 /home/cuong/drive/code/CSV2DRF/.drfenv/lib/python3.12/site-packages/polars/functions/col.py:31(_create_col)
+       51    0.000    0.000    0.000    0.000 {built-in method posix.close}
+     2744    0.000    0.000    0.000    0.000 {method 'append' of 'list' objects}
+      144    0.000    0.000    0.002    0.000 /home/cuong/drive/code/CSV2DRF/.drfenv/lib/python3.12/site-packages/polars/lazyframe/frame.py:3758(select)
+      192    0.000    0.000    0.000    0.000 {method 'get_column' of 'builtins.PyDataFrame' objects}
+       48    0.000    0.000    0.001    0.000 {built-in method numpy.array}
+      384    0.000    0.000    0.002    0.000 /home/cuong/drive/code/CSV2DRF/.drfenv/lib/python3.12/site-packages/polars/functions/col.py:176(__call__)
+    72/24    0.000    0.000    0.004    0.000 /home/cuong/drive/code/CSV2DRF/.drfenv/lib/python3.12/site-packages/polars/_utils/deprecation.py:87(wrapper)
+       48    0.000    0.000    0.012    0.000 /home/cuong/drive/code/CSV2DRF/.drfenv/lib/python3.12/site-packages/polars/dataframe/frame.py:9634(select_seq)
+    35/12    0.000    0.000    0.001    0.000 /usr/lib/python3.12/re/_parser.py:512(_parse)
+      300    0.000    0.000    0.001    0.000 <frozen _collections_abc>:804(get)
+      629    0.000    0.000    0.002    0.000 /usr/lib/python3.12/re/__init__.py:164(match)
+       24    0.000    0.000    0.004    0.000 /home/cuong/drive/code/CSV2DRF/.drfenv/lib/python3.12/site-packages/polars/io/csv/functions.py:1027(scan_csv)
+     1466    0.000    0.000    0.000    0.000 /home/cuong/drive/code/CSV2DRF/.drfenv/lib/python3.12/site-packages/h5py/_hl/files.py:186(make_fcpl)
+       24    0.000    0.000    0.001    0.000 /home/cuong/drive/code/CSV2DRF/.drfenv/lib/python3.12/site-packages/polars/functions/eager.py:26(concat)
+       48    0.000    0.000    0.002    0.000 /home/cuong/drive/code/CSV2DRF/.drfenv/lib/python3.12/site-packages/polars/lazyframe/frame.py:3867(select_seq)
+      144    0.000    0.000    0.000    0.000 {method 'select' of 'builtins.PyLazyFrame' objects}
+       49    0.000    0.000    0.000    0.000 {method 'update' of 'dict' objects}
+       24    0.000    0.000    0.001    0.000 /home/cuong/drive/code/CSV2DRF/.drfenv/lib/python3.12/site-packages/polars/lazyframe/frame.py:3341(_filter)
+        6    0.000    0.000    0.000    0.000 /home/cuong/drive/code/CSV2DRF/.drfenv/lib/python3.12/site-packages/h5py/_hl/attrs.py:111(create)
+      384    0.000    0.000    0.000    0.000 {col}
+      192    0.000    0.000    0.001    0.000 /home/cuong/drive/code/CSV2DRF/.drfenv/lib/python3.12/site-packages/polars/_utils/getitem.py:128(get_df_item_by_key)
+       24    0.000    0.000    0.001    0.000 /home/cuong/drive/code/CSV2DRF/.drfenv/lib/python3.12/site-packages/polars/io/cloud/credential_provider/_builder.py:226(f)
+       24    0.000    0.000    0.000    0.000 {method '__array__' of 'numpy.ndarray' objects}
+       25    0.000    0.000    0.001    0.000 /home/cuong/drive/code/CSV2DRF/csv2drf.py:260(__calculate_center_frequencies)
+      288    0.000    0.000    0.000    0.000 /home/cuong/drive/code/CSV2DRF/.drfenv/lib/python3.12/site-packages/polars/_utils/wrap.py:20(wrap_s)
+       48    0.000    0.000    0.000    0.000 {method 'select_seq' of 'builtins.PyLazyFrame' objects}
+     67/6    0.000    0.000    0.000    0.000 {built-in method _abc._abc_subclasscheck}
+     1462    0.000    0.000    0.000    0.000 {method 'strip' of 'str' objects}
+      264    0.000    0.000    0.000    0.000 /home/cuong/drive/code/CSV2DRF/.drfenv/lib/python3.12/site-packages/polars/expr/expr.py:10850(str)
+       48    0.000    0.000    0.000    0.000 /home/cuong/drive/code/CSV2DRF/.drfenv/lib/python3.12/site-packages/polars/series/series.py:1857(to_frame)
+      234    0.000    0.000    0.000    0.000 {built-in method builtins.getattr}
+      312    0.000    0.000    0.001    0.000 /home/cuong/drive/code/CSV2DRF/.drfenv/lib/python3.12/site-packages/polars/_utils/parse/expr.py:117(_parse_inputs_as_iterable)
+       72    0.000    0.000    0.001    0.000 /home/cuong/drive/code/CSV2DRF/.drfenv/lib/python3.12/site-packages/polars/lazyframe/frame.py:5202(with_columns)
+       50    0.000    0.000    0.000    0.000 {method 'stat' of 'posix.DirEntry' objects}
+       24    0.000    0.000    0.002    0.000 /home/cuong/drive/code/CSV2DRF/.drfenv/lib/python3.12/site-packages/polars/io/csv/functions.py:1359(_scan_csv_impl)
+    58/11    0.000    0.000    0.001    0.000 /usr/lib/python3.12/re/_compiler.py:37(_compile)
+      312    0.000    0.000    0.000    0.000 <frozen os>:762(encode)
+       24    0.000    0.000    0.001    0.000 /home/cuong/drive/code/CSV2DRF/.drfenv/lib/python3.12/site-packages/polars/series/series.py:1141(__mul__)
+       72    0.000    0.000    0.000    0.000 /home/cuong/drive/code/CSV2DRF/.drfenv/lib/python3.12/site-packages/polars/schema.py:42(_check_dtype)
+      168    0.000    0.000    0.002    0.000 /home/cuong/drive/code/CSV2DRF/.drfenv/lib/python3.12/site-packages/polars/expr/string.py:2146(slice)
+      312    0.000    0.000    0.002    0.000 /home/cuong/drive/code/CSV2DRF/.drfenv/lib/python3.12/site-packages/polars/_utils/parse/expr.py:78(parse_into_list_of_expressions)
+      336    0.000    0.000    0.000    0.000 /home/cuong/drive/code/CSV2DRF/.drfenv/lib/python3.12/site-packages/polars/series/series.py:358(_from_pyseries)
+      505    0.000    0.000    0.001    0.000 <frozen abc>:117(__instancecheck__)
+       24    0.000    0.000    0.001    0.000 /home/cuong/drive/code/CSV2DRF/.drfenv/lib/python3.12/site-packages/polars/series/series.py:986(_arithmetic)
+      192    0.000    0.000    0.001    0.000 /home/cuong/drive/code/CSV2DRF/.drfenv/lib/python3.12/site-packages/polars/dataframe/frame.py:8473(get_column)
+       96    0.000    0.000    0.000    0.000 {method 'cast' of 'builtins.PyExpr' objects}
+       28    0.000    0.000    0.000    0.000 {method '__exit__' of '_io._IOBase' objects}
+       24    0.000    0.000    0.000    0.000 /home/cuong/drive/code/CSV2DRF/.drfenv/lib/python3.12/site-packages/polars/dataframe/frame.py:10774(row)
+       25    0.000    0.000    0.000    0.000 /home/cuong/drive/code/CSV2DRF/csv2drf.py:240(__cleanup_metadata)
+       72    0.000    0.000    0.000    0.000 {method 'with_columns' of 'builtins.PyLazyFrame' objects}
+       72    0.000    0.000    0.000    0.000 {method 'len' of 'builtins.PySeries' objects}
+       24    0.000    0.000    0.000    0.000 {method 'str_to_datetime' of 'builtins.PyExpr' objects}
+       96    0.000    0.000    0.000    0.000 /home/cuong/drive/code/CSV2DRF/.drfenv/lib/python3.12/site-packages/polars/_utils/wrap.py:16(wrap_ldf)
+       24    0.000    0.000    0.000    0.000 /home/cuong/drive/code/CSV2DRF/.drfenv/lib/python3.12/site-packages/polars/datatypes/convert.py:337(maybe_cast)
+       24    0.000    0.000    0.001    0.000 /home/cuong/drive/code/CSV2DRF/.drfenv/lib/python3.12/site-packages/polars/expr/string.py:90(to_datetime)
+      480    0.000    0.000    0.000    0.000 /home/cuong/drive/code/CSV2DRF/.drfenv/lib/python3.12/site-packages/numpy/core/_internal.py:525(_view_is_safe)
+       24    0.000    0.000    0.000    0.000 {method 'slice' of 'builtins.PySeries' objects}
+       51    0.000    0.000    0.000    0.000 {built-in method posix.open}
+       24    0.000    0.000    1.497    0.062 /home/cuong/drive/code/CSV2DRF/.drfenv/lib/python3.12/site-packages/polars/dataframe/frame.py:926(__array__)
+      830    0.000    0.000    0.000    0.000 {method 'lstrip' of 'str' objects}
+       24    0.000    0.000    0.000    0.000 {method 'mul_i64' of 'builtins.PySeries' objects}
+      626    0.000    0.000    0.000    0.000 {method 'groups' of 're.Match' objects}
+       26    0.000    0.000    0.000    0.000 {built-in method builtins.sorted}
+       24    0.000    0.000    0.000    0.000 {method 'row_tuple' of 'builtins.PyDataFrame' objects}
+       72    0.000    0.000    0.001    0.000 /home/cuong/drive/code/CSV2DRF/.drfenv/lib/python3.12/site-packages/polars/expr/expr.py:155(__add__)
+      192    0.000    0.000    0.001    0.000 /home/cuong/drive/code/CSV2DRF/.drfenv/lib/python3.12/site-packages/polars/dataframe/frame.py:1225(__getitem__)
+       24    0.000    0.000    0.001    0.000 /home/cuong/drive/code/CSV2DRF/.drfenv/lib/python3.12/site-packages/polars/series/series.py:1357(__array__)
+      408    0.000    0.000    0.000    0.000 /home/cuong/drive/code/CSV2DRF/.drfenv/lib/python3.12/site-packages/polars/lazyframe/frame.py:329(_from_pyldf)
+     1466    0.000    0.000    0.000    0.000 /home/cuong/drive/code/CSV2DRF/.drfenv/lib/python3.12/site-packages/h5py/_hl/files.py:591(__enter__)
+       24    0.000    0.000    0.012    0.001 /home/cuong/drive/code/CSV2DRF/.drfenv/lib/python3.12/site-packages/polars/lazyframe/frame.py:2255(collect_schema)
+      312    0.000    0.000    0.001    0.000 /home/cuong/drive/code/CSV2DRF/.drfenv/lib/python3.12/site-packages/polars/_utils/parse/expr.py:130(_is_iterable)
+       48    0.000    0.000    0.000    0.000 {method 'lazy' of 'builtins.PyDataFrame' objects}
+       24    0.000    0.000    0.000    0.000 /home/cuong/drive/code/CSV2DRF/.drfenv/lib/python3.12/site-packages/polars/_utils/slice.py:52(_slice_setup)
+      192    0.000    0.000    0.008    0.000 /home/cuong/drive/code/CSV2DRF/.drfenv/lib/python3.12/site-packages/polars/series/series.py:4283(to_numpy)
+       28    0.000    0.000    0.000    0.000 <frozen posixpath>:100(split)
+       72    0.000    0.000    0.001    0.000 /home/cuong/drive/code/CSV2DRF/.drfenv/lib/python3.12/site-packages/polars/expr/string.py:2398(to_integer)
+      144    0.000    0.000    0.000    0.000 /home/cuong/drive/code/CSV2DRF/.drfenv/lib/python3.12/site-packages/polars/dataframe/frame.py:493(_from_pydf)
+       24    0.000    0.000    0.000    0.000 /home/cuong/drive/code/CSV2DRF/.drfenv/lib/python3.12/site-packages/polars/series/series.py:7527(str)
+       24    0.000    0.000    1.497    0.062 /home/cuong/drive/code/CSV2DRF/.drfenv/lib/python3.12/site-packages/polars/dataframe/frame.py:1740(to_numpy)
+       72    0.000    0.000    0.000    0.000 {method 'str_to_integer' of 'builtins.PyExpr' objects}
+      500    0.000    0.000    0.000    0.000 {method 'isdigit' of 'str' objects}
+      168    0.000    0.000    0.000    0.000 {method 'str_slice' of 'builtins.PyExpr' objects}
+      181    0.000    0.000    0.000    0.000 {method 'split' of 'str' objects}
+       52    0.000    0.000    0.000    0.000 {built-in method posix.scandir}
+      144    0.000    0.000    0.000    0.000 {method 'dtype' of 'builtins.PySeries' objects}
+      168    0.000    0.000    0.000    0.000 {method 'alias' of 'builtins.PyExpr' objects}
+       24    0.000    0.000    0.001    0.000 /home/cuong/drive/code/CSV2DRF/.drfenv/lib/python3.12/site-packages/polars/expr/string.py:210(strptime)
+       96    0.000    0.000    0.000    0.000 /home/cuong/drive/code/CSV2DRF/.drfenv/lib/python3.12/site-packages/polars/expr/expr.py:1741(cast)
+      165    0.000    0.000    0.000    0.000 /usr/lib/python3.12/re/_parser.py:261(get)
+      641    0.000    0.000    0.000    0.000 {method 'lower' of 'str' objects}
+      168    0.000    0.000    0.000    0.000 /home/cuong/drive/code/CSV2DRF/.drfenv/lib/python3.12/site-packages/polars/expr/expr.py:677(alias)
+      192    0.000    0.000    0.000    0.000 /home/cuong/drive/code/CSV2DRF/.drfenv/lib/python3.12/site-packages/polars/functions/lazy.py:512(first)
+       72    0.000    0.000    0.000    0.000 /home/cuong/drive/code/CSV2DRF/.drfenv/lib/python3.12/site-packages/polars/series/series.py:4673(len)
+      219    0.000    0.000    0.000    0.000 {built-in method builtins.issubclass}
+      284    0.000    0.000    0.000    0.000 {method 'get' of 'dict' objects}
+        6    0.000    0.000    0.000    0.000 /home/cuong/drive/code/CSV2DRF/.drfenv/lib/python3.12/site-packages/h5py/_hl/group.py:348(__getitem__)
+    27/26    0.000    0.000    0.002    0.000 <frozen os>:200(makedirs)
+       51    0.000    0.000    0.000    0.000 {built-in method posix.fstat}
+       37    0.000    0.000    0.000    0.000 /usr/lib/python3.12/re/_compiler.py:243(_optimize_charset)
+       48    0.000    0.000    0.001    0.000 /home/cuong/drive/code/CSV2DRF/.drfenv/lib/python3.12/site-packages/polars/lazyframe/frame.py:6067(gather_every)
+       27    0.000    0.000    0.000    0.000 <frozen codecs>:309(__init__)
+       29    0.000    0.000    0.000    0.000 <frozen codecs>:319(decode)
+       24    0.000    0.000    0.001    0.000 /home/cuong/drive/code/CSV2DRF/.drfenv/lib/python3.12/site-packages/polars/_utils/getitem.py:93(_select_elements_by_slice)
+      168    0.000    0.000    0.000    0.000 /home/cuong/drive/code/CSV2DRF/.drfenv/lib/python3.12/site-packages/polars/datatypes/convert.py:68(is_polars_dtype)
+    23/11    0.000    0.000    0.001    0.000 /usr/lib/python3.12/re/_parser.py:452(_parse_sub)
+       48    0.000    0.000    0.000    0.000 /home/cuong/drive/code/CSV2DRF/.drfenv/lib/python3.12/site-packages/six.py:604(iteritems)
+       24    0.000    0.000    0.001    0.000 /home/cuong/drive/code/CSV2DRF/.drfenv/lib/python3.12/site-packages/polars/lazyframe/frame.py:3426(filter)
+       48    0.000    0.000    0.001    0.000 /home/cuong/drive/code/CSV2DRF/.drfenv/lib/python3.12/site-packages/polars/_utils/getitem.py:50(get_series_item_by_key)
+       24    0.000    0.000    0.001    0.000 /home/cuong/drive/code/CSV2DRF/.drfenv/lib/python3.12/site-packages/polars/io/cloud/credential_provider/_builder.py:217(_init_credential_provider_builder)
+       48    0.000    0.000    0.000    0.000 /home/cuong/drive/code/CSV2DRF/.drfenv/lib/python3.12/site-packages/polars/series/series.py:652(__len__)
+        1    0.000    0.000    0.001    0.001 /home/cuong/drive/code/CSV2DRF/.drfenv/lib/python3.12/site-packages/digital_rf/digital_metadata.py:368(_set_fields)
+       24    0.000    0.000    0.000    0.000 /home/cuong/drive/code/CSV2DRF/.drfenv/lib/python3.12/site-packages/polars/datatypes/convert.py:268(dtype_to_py_type)
+       24    0.000    0.000    0.000    0.000 /home/cuong/drive/code/CSV2DRF/.drfenv/lib/python3.12/site-packages/polars/expr/datetime.py:1605(epoch)
+      327    0.000    0.000    0.000    0.000 /usr/lib/python3.12/re/_parser.py:168(__getitem__)
+       24    0.000    0.000    0.000    0.000 /home/cuong/drive/code/CSV2DRF/.drfenv/lib/python3.12/site-packages/polars/_utils/various.py:223(normalize_filepath)
+       48    0.000    0.000    0.000    0.000 /home/cuong/drive/code/CSV2DRF/.drfenv/lib/python3.12/site-packages/polars/series/series.py:600(name)
+        1    0.000    0.000    0.903    0.903 /home/cuong/drive/code/CSV2DRF/csv2drf.py:44(__init__)
+    69/22    0.000    0.000    0.000    0.000 /usr/lib/python3.12/re/_parser.py:178(getwidth)
+       96    0.000    0.000    0.000    0.000 /home/cuong/drive/code/CSV2DRF/.drfenv/lib/python3.12/site-packages/polars/datatypes/_parse.py:44(parse_into_dtype)
+       48    0.000    0.000    0.000    0.000 /home/cuong/drive/code/CSV2DRF/.drfenv/lib/python3.12/site-packages/polars/functions/aggregation/vertical.py:11(all)
+       24    0.000    0.000    0.001    0.000 /home/cuong/drive/code/CSV2DRF/.drfenv/lib/python3.12/site-packages/polars/_utils/slice.py:81(apply)
+       24    0.000    0.000    0.000    0.000 {any_horizontal}
+        1    0.000    0.000    0.001    0.001 /home/cuong/drive/code/CSV2DRF/.drfenv/lib/python3.12/site-packages/digital_rf/digital_metadata.py:452(_write_properties)
+       29    0.000    0.000    0.000    0.000 {built-in method _codecs.utf_8_decode}
+       48    0.000    0.000    0.000    0.000 {method 'name' of 'builtins.PySeries' objects}
+       48    0.000    0.000    0.001    0.000 /home/cuong/drive/code/CSV2DRF/.drfenv/lib/python3.12/site-packages/polars/series/series.py:1284(__getitem__)
+       24    0.000    0.000    0.000    0.000 {method 'get_index_signed' of 'builtins.PySeries' objects}
+       24    0.000    0.000    0.000    0.000 /home/cuong/drive/code/CSV2DRF/.drfenv/lib/python3.12/site-packages/polars/schema.py:131(names)
+       24    0.000    0.000    0.000    0.000 /home/cuong/drive/code/CSV2DRF/.drfenv/lib/python3.12/site-packages/polars/series/series.py:7512(dt)
+       25    0.000    0.000    0.000    0.000 {built-in method fromisoformat}
+      264    0.000    0.000    0.000    0.000 /home/cuong/drive/code/CSV2DRF/.drfenv/lib/python3.12/site-packages/polars/expr/string.py:42(__init__)
+       48    0.000    0.000    0.000    0.000 /home/cuong/drive/code/CSV2DRF/.drfenv/lib/python3.12/site-packages/polars/io/csv/_utils.py:11(_check_arg_is_1byte)
+       72    0.000    0.000    0.000    0.000 /home/cuong/drive/code/CSV2DRF/.drfenv/lib/python3.12/site-packages/polars/schema.py:24(_required_init_args)
+       24    0.000    0.000    0.000    0.000 /home/cuong/drive/code/CSV2DRF/.drfenv/lib/python3.12/site-packages/polars/series/utils.py:152(get_ffi_func)
+       24    0.000    0.000    0.000    0.000 /home/cuong/drive/code/CSV2DRF/.drfenv/lib/python3.12/site-packages/polars/functions/aggregation/horizontal.py:66(any_horizontal)
+       48    0.000    0.000    0.000    0.000 /home/cuong/drive/code/CSV2DRF/.drfenv/lib/python3.12/site-packages/polars/dataframe/frame.py:9495(lazy)
+       24    0.000    0.000    0.000    0.000 /home/cuong/drive/code/CSV2DRF/.drfenv/lib/python3.12/site-packages/polars/_utils/various.py:79(_is_generator)
+       48    0.000    0.000    0.000    0.000 /home/cuong/drive/code/CSV2DRF/.drfenv/lib/python3.12/site-packages/polars/dataframe/frame.py:2484(to_series)
+        1    0.000    0.000    0.000    0.000 {built-in method builtins.dir}
+       24    0.000    0.000    0.000    0.000 /home/cuong/drive/code/CSV2DRF/.drfenv/lib/python3.12/site-packages/polars/expr/expr.py:10806(dt)
+       48    0.000    0.000    0.000    0.000 {method 'to_series' of 'builtins.PyDataFrame' objects}
+       24    0.000    0.000    0.000    0.000 /home/cuong/drive/code/CSV2DRF/.drfenv/lib/python3.12/site-packages/polars/series/series.py:2912(slice)
+       63    0.000    0.000    0.000    0.000 {method 'extend' of 'list' objects}
+      576    0.000    0.000    0.000    0.000 /usr/lib/python3.12/typing.py:2154(cast)
+      144    0.000    0.000    0.000    0.000 /home/cuong/drive/code/CSV2DRF/.drfenv/lib/python3.12/site-packages/polars/series/series.py:568(dtype)
+      134    0.000    0.000    0.000    0.000 {method 'items' of 'dict' objects}
+       11    0.000    0.000    0.000    0.000 /usr/lib/python3.12/re/_compiler.py:511(_compile_info)
+      192    0.000    0.000    0.000    0.000 {first}
+      242    0.000    0.000    0.000    0.000 /usr/lib/python3.12/re/_parser.py:240(__next)
+        1    0.000    0.000    0.001    0.001 /home/cuong/drive/code/CSV2DRF/.drfenv/lib/python3.12/site-packages/digital_rf/digital_metadata.py:115(__init__)
+       48    0.000    0.000    0.000    0.000 {method 'columns' of 'builtins.PyDataFrame' objects}
+       24    0.000    0.000    0.001    0.000 /home/cuong/drive/code/CSV2DRF/.drfenv/lib/python3.12/site-packages/polars/lazyframe/frame.py:6760(drop_nulls)
+       72    0.000    0.000    0.000    0.000 /home/cuong/drive/code/CSV2DRF/.drfenv/lib/python3.12/site-packages/polars/datatypes/classes.py:200(is_nested)
+        6    0.000    0.000    0.000    0.000 /usr/lib/python3.12/argparse.py:1458(add_argument)
+       22    0.000    0.000    0.000    0.000 /usr/lib/python3.12/enum.py:1562(__and__)
+       24    0.000    0.000    0.000    0.000 /home/cuong/drive/code/CSV2DRF/.drfenv/lib/python3.12/site-packages/polars/_utils/logging.py:6(verbose)
+       24    0.000    0.000    0.000    0.000 /home/cuong/drive/code/CSV2DRF/.drfenv/lib/python3.12/site-packages/polars/_utils/various.py:114(is_bool_sequence)
+       24    0.000    0.000    0.000    0.000 {method 'filter' of 'builtins.PyLazyFrame' objects}
+       24    0.000    0.000    0.000    0.000 /home/cuong/drive/code/CSV2DRF/.drfenv/lib/python3.12/site-packages/polars/datatypes/convert.py:258(dtype_to_ffiname)
+       24    0.000    0.000    0.000    0.000 /home/cuong/drive/code/CSV2DRF/.drfenv/lib/python3.12/site-packages/polars/io/cloud/_utils.py:30(_is_azure_cloud)
+      120    0.000    0.000    0.000    0.000 /home/cuong/drive/code/CSV2DRF/.drfenv/lib/python3.12/site-packages/polars/datatypes/classes.py:165(is_decimal)
+        1    0.000    0.000    0.000    0.000 /usr/lib/python3.12/configparser.py:974(_read)
+       11    0.000    0.000    0.002    0.000 /usr/lib/python3.12/re/_compiler.py:740(compile)
+        1    0.000    0.000    0.001    0.001 /home/cuong/drive/code/CSV2DRF/.drfenv/lib/python3.12/site-packages/digital_rf/digital_rf_hdf5.py:189(__init__)
+       48    0.000    0.000    0.000    0.000 {method 'gather_every' of 'builtins.PyExpr' objects}
+      173    0.000    0.000    0.000    0.000 {method 'pop' of 'dict' objects}
+       48    0.000    0.000    0.000    0.000 /home/cuong/drive/code/CSV2DRF/.drfenv/lib/python3.12/site-packages/polars/expr/expr.py:4890(gather_every)
+      144    0.000    0.000    0.000    0.000 /home/cuong/drive/code/CSV2DRF/.drfenv/lib/python3.12/site-packages/polars/io/cloud/_utils.py:31(<genexpr>)
+       24    0.000    0.000    0.000    0.000 {method 'dt_epoch_seconds' of 'builtins.PyExpr' objects}
+        3    0.000    0.000    0.000    0.000 /usr/lib/python3.12/gettext.py:479(find)
+       24    0.000    0.000    0.000    0.000 <frozen posixpath>:256(expanduser)
+      194    0.000    0.000    0.000    0.000 /home/cuong/drive/code/CSV2DRF/.drfenv/lib/python3.12/site-packages/h5py/_hl/filters.py:170(rq_tuple)
+       11    0.000    0.000    0.001    0.000 /usr/lib/python3.12/re/_parser.py:969(parse)
+        6    0.000    0.000    0.000    0.000 /home/cuong/drive/code/CSV2DRF/.drfenv/lib/python3.12/site-packages/h5py/_hl/attrs.py:96(__setitem__)
+       24    0.000    0.000    0.000    0.000 /home/cuong/drive/code/CSV2DRF/.drfenv/lib/python3.12/site-packages/polars/expr/expr.py:937(is_null)
+        1    0.000    0.000    0.000    0.000 {built-in method marshal.loads}
+      142    0.000    0.000    0.000    0.000 {built-in method builtins.min}
+       48    0.000    0.000    0.000    0.000 {built-in method builtins.id}
+       26    0.000    0.000    0.000    0.000 /usr/lib/python3.12/glob.py:142(_iterdir)
+       37    0.000    0.000    0.000    0.000 /usr/lib/python3.12/re/_compiler.py:216(_compile_charset)
+        6    0.000    0.000    0.000    0.000 /home/cuong/drive/code/CSV2DRF/.drfenv/lib/python3.12/site-packages/h5py/_hl/files.py:283(attrs)
+        1    0.000    0.000    0.001    0.001 /usr/lib/python3.12/_strptime.py:293(_strptime)
+      128    0.000    0.000    0.000    0.000 /usr/lib/python3.12/re/_parser.py:256(match)
+       66    0.000    0.000    0.000    0.000 /usr/lib/python3.12/enum.py:1544(_get_value)
+       48    0.000    0.000    0.000    0.000 /home/cuong/drive/code/CSV2DRF/.drfenv/lib/python3.12/site-packages/polars/dataframe/frame.py:802(columns)
+       24    0.000    0.000    0.000    0.000 <frozen os>:779(getenv)
+       24    0.000    0.000    0.000    0.000 {method 'indices' of 'slice' objects}
+        1    0.000    0.000    0.000    0.000 {method 'disable' of '_lsprof.Profiler' objects}
+        1    0.000    0.000    0.000    0.000 /usr/lib/python3.12/configparser.py:1287(__init__)
+       11    0.000    0.000    0.001    0.000 /usr/lib/python3.12/re/_compiler.py:573(_code)
+        3    0.000    0.000    0.000    0.000 /usr/lib/python3.12/argparse.py:1376(__init__)
+       96    0.000    0.000    0.000    0.000 {method 'pop' of 'set' objects}
+       24    0.000    0.000    0.000    0.000 /home/cuong/drive/code/CSV2DRF/.drfenv/lib/python3.12/site-packages/polars/expr/string.py:2976(_validate_format_argument)
+      106    0.000    0.000    0.000    0.000 /usr/lib/python3.12/re/_parser.py:176(append)
+       24    0.000    0.000    0.000    0.000 /home/cuong/drive/code/CSV2DRF/.drfenv/lib/python3.12/site-packages/polars/io/cloud/_utils.py:20(_get_path_scheme)
+       31    0.000    0.000    0.000    0.000 {method 'rfind' of 'str' objects}
+        6    0.000    0.000    0.000    0.000 /usr/lib/python3.12/gettext.py:224(_expand_lang)
+        1    0.000    0.000    0.000    0.000 /usr/lib/python3.12/configparser.py:582(__init__)
+       24    0.000    0.000    0.000    0.000 {method 'is_null' of 'builtins.PyExpr' objects}
+       44    0.000    0.000    0.000    0.000 {method 'rstrip' of 'str' objects}
+    16/11    0.000    0.000    0.000    0.000 /usr/lib/python3.12/re/_compiler.py:436(_get_literal_prefix)
+       24    0.000    0.000    0.000    0.000 /home/cuong/drive/code/CSV2DRF/.drfenv/lib/python3.12/site-packages/polars/datatypes/classes.py:195(is_temporal)
+        6    0.000    0.000    0.000    0.000 /usr/lib/python3.12/argparse.py:173(__init__)
+        1    0.000    0.000    0.000    0.000 /usr/lib/python3.12/argparse.py:1952(_parse_known_args)
+       39    0.000    0.000    0.000    0.000 <frozen _collections_abc>:435(__subclasshook__)
+        1    0.000    0.000    0.898    0.898 /usr/lib/python3.12/shutil.py:724(rmtree)
+       51    0.000    0.000    0.000    0.000 <frozen genericpath>:99(samestat)
+       56    0.000    0.000    0.000    0.000 {method 'add' of 'set' objects}
+       32    0.000    0.000    0.000    0.000 /usr/lib/python3.12/re/_parser.py:372(_escape)
+        6    0.000    0.000    0.000    0.000 /usr/lib/python3.12/shutil.py:1461(get_terminal_size)
+       72    0.000    0.000    0.000    0.000 /home/cuong/drive/code/CSV2DRF/.drfenv/lib/python3.12/site-packages/polars/_utils/deprecation.py:100(_rename_keyword_argument)
+      108    0.000    0.000    0.000    0.000 /usr/lib/python3.12/re/_parser.py:164(__len__)
+        1    0.000    0.000    0.000    0.000 <frozen importlib._bootstrap>:1240(_find_spec)
+       51    0.000    0.000    0.000    0.000 {built-in method builtins.iter}
+       24    0.000    0.000    0.000    0.000 /home/cuong/drive/code/CSV2DRF/.drfenv/lib/python3.12/site-packages/polars/io/cloud/_utils.py:26(_is_aws_cloud)
+        1    0.000    0.000    0.001    0.001 /usr/lib/python3.12/argparse.py:1776(__init__)
+       67    0.000    0.000    0.000    0.000 {method 'find' of 'bytearray' objects}
+       24    0.000    0.000    0.000    0.000 /home/cuong/drive/code/CSV2DRF/.drfenv/lib/python3.12/site-packages/polars/series/string.py:35(__init__)
+       24    0.000    0.000    0.000    0.000 /home/cuong/drive/code/CSV2DRF/.drfenv/lib/python3.12/site-packages/polars/_utils/various.py:136(is_sequence)
+       48    0.000    0.000    0.000    0.000 /home/cuong/drive/code/CSV2DRF/.drfenv/lib/python3.12/site-packages/polars/lazyframe/frame.py:3388(<genexpr>)
+       22    0.000    0.000    0.000    0.000 /usr/lib/python3.12/enum.py:726(__call__)
+        1    0.000    0.000    0.000    0.000 /home/cuong/drive/code/CSV2DRF/.drfenv/lib/python3.12/site-packages/numpy/lib/_version.py:55(__init__)
+        1    0.000    0.000    0.001    0.001 /home/cuong/drive/code/CSV2DRF/csv2drf.py:174(__calculate_start_global_index)
+       72    0.000    0.000    0.000    0.000 /home/cuong/drive/code/CSV2DRF/.drfenv/lib/python3.12/site-packages/polars/io/cloud/_utils.py:27(<genexpr>)
+       66    0.000    0.000    0.000    0.000 /usr/lib/python3.12/re/_parser.py:293(tell)
+        2    0.000    0.000    0.000    0.000 /usr/lib/python3.12/configparser.py:1210(__init__)
+       20    0.000    0.000    0.000    0.000 {method 'join' of 'str' objects}
+        1    0.000    0.000    0.000    0.000 /usr/lib/python3.12/configparser.py:665(read)
+       24    0.000    0.000    0.000    0.000 {built-in method builtins.abs}
+       50    0.000    0.000    0.000    0.000 {built-in method _stat.S_ISDIR}
+        1    0.000    0.000    0.000    0.000 <frozen importlib._bootstrap>:304(acquire)
+        7    0.000    0.000    0.000    0.000 /usr/lib/python3.12/locale.py:381(normalize)
+        1    0.000    0.000    0.000    0.000 /usr/lib/python3.12/uuid.py:139(__init__)
+       26    0.000    0.000    0.000    0.000 <frozen codecs>:331(getstate)
+        1    0.000    0.000    0.000    0.000 /usr/lib/python3.12/fnmatch.py:48(filter)
+       25    0.000    0.000    0.000    0.000 /usr/lib/python3.12/glob.py:60(_iglob)
+        4    0.000    0.000    0.000    0.000 {built-in method posix.access}
+        1    0.000    0.000    0.000    0.000 {built-in method _io.open_code}
+       24    0.000    0.000    0.000    0.000 /home/cuong/drive/code/CSV2DRF/.drfenv/lib/python3.12/site-packages/polars/io/cloud/_utils.py:34(_is_gcp_cloud)
+        5    0.000    0.000    0.000    0.000 /usr/lib/python3.12/argparse.py:1599(_get_optional_kwargs)
+        1    0.000    0.000    0.000    0.000 /usr/lib/python3.12/argparse.py:1914(parse_known_args)
+        1    0.000    0.000    0.000    0.000 /usr/lib/python3.12/fnmatch.py:74(translate)
+        1    0.000    0.000    0.000    0.000 /home/cuong/drive/code/CSV2DRF/.drfenv/lib/python3.12/site-packages/polars/datatypes/convert.py:169(DTYPE_TO_PY_TYPE)
+        1    0.000    0.000    0.000    0.000 <frozen importlib._bootstrap_external>:1593(find_spec)
+       52    0.000    0.000    0.000    0.000 {method '__exit__' of 'posix.ScandirIterator' objects}
+       97    0.000    0.000    0.000    0.000 /home/cuong/drive/code/CSV2DRF/.drfenv/lib/python3.12/site-packages/h5py/_hl/filters.py:96(_normalize_external)
+        1    0.000    0.000    0.001    0.001 /usr/lib/python3.12/_strptime.py:551(_strptime_datetime)
+        1    0.000    0.000    0.000    0.000 /home/cuong/drive/code/CSV2DRF/csv2drf.py:34(__init__)
+       27    0.000    0.000    0.000    0.000 <frozen codecs>:260(__init__)
+        1    0.000    0.000    0.000    0.000 <frozen importlib._bootstrap_external>:1062(get_code)
+        2    0.000    0.000    0.000    0.000 /usr/lib/python3.12/argparse.py:1509(add_argument_group)
+       37    0.000    0.000    0.000    0.000 /usr/lib/python3.12/argparse.py:1429(register)
+        1    0.000    0.000    0.000    0.000 <frozen importlib._bootstrap>:1304(_find_and_load_unlocked)
+       24    0.000    0.000    0.000    0.000 /home/cuong/drive/code/CSV2DRF/.drfenv/lib/python3.12/site-packages/polars/series/datetime.py:33(__init__)
+       24    0.000    0.000    0.000    0.000 /home/cuong/drive/code/CSV2DRF/.drfenv/lib/python3.12/site-packages/polars/io/cloud/_utils.py:9(_first_scan_path)
+        3    0.000    0.000    0.000    0.000 /usr/lib/python3.12/encodings/__init__.py:43(normalize_encoding)
+        1    0.000    0.000    0.000    0.000 /home/cuong/drive/code/CSV2DRF/.drfenv/lib/python3.12/site-packages/polars/io/cloud/_utils.py:1(<module>)
+     67/6    0.000    0.000    0.000    0.000 <frozen abc>:121(__subclasscheck__)
+       11    0.000    0.000    0.000    0.000 {built-in method _sre.compile}
+       24    0.000    0.000    0.000    0.000 /home/cuong/drive/code/CSV2DRF/.drfenv/lib/python3.12/site-packages/polars/_utils/various.py:70(_process_null_values)
+        3    0.000    0.000    0.000    0.000 /home/cuong/drive/code/CSV2DRF/.drfenv/lib/python3.12/site-packages/polars/dependencies.py:190(_might_be)
+        5    0.000    0.000    0.000    0.000 <frozen _collections_abc>:309(__subclasshook__)
+        1    0.000    0.000    0.000    0.000 {built-in method posix.lstat}
+       14    0.000    0.000    0.000    0.000 /usr/lib/python3.12/re/__init__.py:255(escape)
+        1    0.000    0.000    0.000    0.000 /usr/lib/python3.12/_strptime.py:238(pattern)
+        1    0.000    0.000    0.000    0.000 /usr/lib/python3.12/uuid.py:723(uuid4)
+       24    0.000    0.000    0.000    0.000 {method 'keys' of 'collections.OrderedDict' objects}
+       24    0.000    0.000    0.000    0.000 /home/cuong/drive/code/CSV2DRF/.drfenv/lib/python3.12/site-packages/polars/series/series.py:3588(is_empty)
+        1    0.000    0.000    0.000    0.000 /usr/lib/python3.12/glob.py:176(_listdir)
+        3    0.000    0.000    0.000    0.000 /usr/lib/python3.12/locale.py:347(_replace_encoding)
+       11    0.000    0.000    0.000    0.000 /usr/lib/python3.12/re/_parser.py:86(opengroup)
+       27    0.000    0.000    0.000    0.000 {method 'keys' of 'dict' objects}
+        6    0.000    0.000    0.000    0.000 /usr/lib/python3.12/argparse.py:1519(_add_action)
+       11    0.000    0.000    0.000    0.000 /usr/lib/python3.12/re/_parser.py:231(__init__)
+       14    0.000    0.000    0.000    0.000 {built-in method builtins.setattr}
+       58    0.000    0.000    0.000    0.000 /usr/lib/python3.12/re/_parser.py:113(__init__)
+       96    0.000    0.000    0.000    0.000 /home/cuong/drive/code/CSV2DRF/.drfenv/lib/python3.12/site-packages/polars/io/cloud/_utils.py:35(<genexpr>)
+        3    0.000    0.000    0.000    0.000 /usr/lib/python3.12/argparse.py:1999(take_action)
+        1    0.000    0.000    0.000    0.000 <frozen importlib._bootstrap>:1349(_find_and_load)
+        6    0.000    0.000    0.000    0.000 /usr/lib/python3.12/argparse.py:617(_format_args)
+        3    0.000    0.000    0.000    0.000 /usr/lib/python3.12/gettext.py:534(translation)
+        9    0.000    0.000    0.000    0.000 /home/cuong/drive/code/CSV2DRF/.drfenv/lib/python3.12/site-packages/polars/dependencies.py:196(<genexpr>)
+        1    0.000    0.000    0.000    0.000 /usr/lib/python3.12/configparser.py:1098(_join_multiline_values)
+        1    0.000    0.000    0.000    0.000 /usr/lib/python3.12/logging/__init__.py:1790(isEnabledFor)
+       14    0.000    0.000    0.000    0.000 /usr/lib/python3.12/re/_parser.py:449(_uniq)
+        1    0.000    0.000    0.000    0.000 <frozen importlib._bootstrap>:426(_get_module_lock)
+       22    0.000    0.000    0.000    0.000 /usr/lib/python3.12/enum.py:1129(__new__)
+       27    0.000    0.000    0.000    0.000 {built-in method builtins.max}
+       24    0.000    0.000    0.000    0.000 /home/cuong/drive/code/CSV2DRF/.drfenv/lib/python3.12/site-packages/polars/_utils/slice.py:27(__init__)
+        3    0.000    0.000    0.000    0.000 /usr/lib/python3.12/argparse.py:2511(_get_values)
+        1    0.000    0.000    0.000    0.000 /usr/lib/python3.12/glob.py:13(glob)
+       44    0.000    0.000    0.000    0.000 /usr/lib/python3.12/re/_parser.py:83(groups)
+        7    0.000    0.000    0.000    0.000 <frozen _collections_abc>:104(_check_methods)
+       17    0.000    0.000    0.000    0.000 /usr/lib/python3.12/re/_compiler.py:398(_simple)
+        2    0.000    0.000    0.000    0.000 <frozen importlib._bootstrap_external>:482(cache_from_source)
+       66    0.000    0.000    0.000    0.000 {built-in method builtins.ord}
+        6    0.000    0.000    0.000    0.000 /usr/lib/python3.12/argparse.py:2634(_get_formatter)
+       19    0.000    0.000    0.001    0.000 /usr/lib/python3.12/re/__init__.py:226(compile)
+        1    0.000    0.000    0.000    0.000 <frozen importlib._bootstrap_external>:1183(get_data)
+        1    0.000    0.000    0.000    0.000 /usr/lib/python3.12/fnmatch.py:38(_compile_pattern)
+       24    0.000    0.000    0.000    0.000 /home/cuong/drive/code/CSV2DRF/.drfenv/lib/python3.12/site-packages/polars/io/_utils.py:66(parse_row_index_args)
+       24    0.000    0.000    0.000    0.000 /home/cuong/drive/code/CSV2DRF/.drfenv/lib/python3.12/site-packages/polars/expr/datetime.py:34(__init__)
+        6    0.000    0.000    0.000    0.000 /usr/lib/python3.12/argparse.py:857(__init__)
+        2    0.000    0.000    0.000    0.000 /usr/lib/python3.12/argparse.py:2020(consume_optional)
+        2    0.000    0.000    0.000    0.000 /usr/lib/python3.12/argparse.py:2241(_match_argument)
+        1    0.000    0.000    0.000    0.000 /home/cuong/drive/code/CSV2DRF/.drfenv/lib/python3.12/site-packages/numpy/core/records.py:418(__new__)
+        6    0.000    0.000    0.000    0.000 {built-in method posix.get_terminal_size}
+        2    0.000    0.000    0.000    0.000 /usr/lib/python3.12/argparse.py:1686(__init__)
+        5    0.000    0.000    0.000    0.000 /home/cuong/drive/code/CSV2DRF/.drfenv/lib/python3.12/site-packages/numpy/core/records.py:441(__getattribute__)
+       24    0.000    0.000    0.000    0.000 /home/cuong/drive/code/CSV2DRF/.drfenv/lib/python3.12/site-packages/polars/lazyframe/frame.py:3393(<genexpr>)
+        7    0.000    0.000    0.000    0.000 /usr/lib/python3.12/re/_compiler.py:467(_get_charset_prefix)
+        1    0.000    0.000    0.000    0.000 /usr/lib/python3.12/configparser.py:743(get)
+       26    0.000    0.000    0.000    0.000 /usr/lib/python3.12/glob.py:108(<genexpr>)
+        1    0.000    0.000    0.000    0.000 /usr/lib/python3.12/configparser.py:1222(__getitem__)
+       22    0.000    0.000    0.000    0.000 /usr/lib/python3.12/re/_compiler.py:570(isstring)
+        1    0.000    0.000    0.000    0.000 /usr/lib/python3.12/logging/__init__.py:234(_acquireLock)
+        1    0.000    0.000    0.000    0.000 <frozen importlib._bootstrap_external>:1491(_get_spec)
+        1    0.000    0.000    0.000    0.000 /home/cuong/drive/code/CSV2DRF/csv2drf.py:38(get_compression_level)
+        6    0.000    0.000    0.000    0.000 <frozen importlib._bootstrap_external>:126(_path_join)
+        3    0.000    0.000    0.000    0.000 /usr/lib/python3.12/gettext.py:593(dgettext)
+       11    0.000    0.000    0.000    0.000 /usr/lib/python3.12/re/_parser.py:98(closegroup)
+        6    0.000    0.000    0.000    0.000 /usr/lib/python3.12/argparse.py:1708(_add_action)
+        1    0.000    0.000    0.000    0.000 /usr/lib/python3.12/argparse.py:2110(consume_positionals)
+        4    0.000    0.000    0.000    0.000 /usr/lib/python3.12/re/_compiler.py:407(_generate_overlap_table)
+       14    0.000    0.000    0.000    0.000 {built-in method fromkeys}
+        1    0.000    0.000    0.000    0.000 <frozen importlib._bootstrap>:733(_init_module_attrs)
+        1    0.000    0.000    0.000    0.000 <frozen importlib._bootstrap>:124(setdefault)
+        1    0.000    0.000    0.000    0.000 <frozen importlib._bootstrap_external>:989(exec_module)
+       11    0.000    0.000    0.000    0.000 /usr/lib/python3.12/re/_parser.py:953(fix_flags)
+       14    0.000    0.000    0.000    0.000 {method 'translate' of 'str' objects}
+        1    0.000    0.000    0.000    0.000 <frozen importlib._bootstrap>:74(__new__)
+        1    0.000    0.000    0.001    0.001 {built-in method strptime}
+        6    0.000    0.000    0.000    0.000 {method 'fileno' of '_io.TextIOWrapper' objects}
+        1    0.000    0.000    0.000    0.000 <frozen importlib._bootstrap_external>:1588(_get_spec)
+        1    0.000    0.000    0.000    0.000 /home/cuong/drive/code/CSV2DRF/.drfenv/lib/python3.12/site-packages/packaging/version.py:358(base_version)
+        1    0.000    0.000    0.000    0.000 /usr/lib/python3.12/glob.py:105(_glob1)
+        1    0.000    0.000    0.000    0.000 <frozen importlib._bootstrap>:806(module_from_spec)
+       48    0.000    0.000    0.000    0.000 /home/cuong/drive/code/CSV2DRF/.drfenv/lib/python3.12/site-packages/polars/datatypes/classes.py:122(base_type)
+       43    0.000    0.000    0.000    0.000 {method 'setdefault' of 'dict' objects}
+        2    0.000    0.000    0.000    0.000 {method 'sub' of 're.Pattern' objects}
+        1    0.000    0.000    0.000    0.000 <frozen importlib._bootstrap>:911(_load_unlocked)
+        1    0.000    0.000    0.000    0.000 <frozen importlib._bootstrap_external>:802(spec_from_file_location)
+        1    0.000    0.000    0.000    0.000 /usr/lib/python3.12/configparser.py:1122(_unify_values)
+        3    0.000    0.000    0.000    0.000 /usr/lib/python3.12/glob.py:223(has_magic)
+        1    0.000    0.000    0.000    0.000 /usr/lib/python3.12/argparse.py:2263(_match_arguments_partial)
+       15    0.000    0.000    0.000    0.000 /usr/lib/python3.12/argparse.py:1433(_registry_get)
+        8    0.000    0.000    0.000    0.000 {method 'group' of 're.Match' objects}
+        1    0.000    0.000    0.000    0.000 /home/cuong/drive/code/CSV2DRF/.drfenv/lib/python3.12/site-packages/polars/datatypes/convert.py:140(DTYPE_TO_FFINAME)
+        1    0.000    0.000    0.000    0.000 {method 'read' of '_io.BufferedReader' objects}
+       20    0.000    0.000    0.000    0.000 /usr/lib/python3.12/re/_compiler.py:31(_combine_flags)
+        6    0.000    0.000    0.000    0.000 /home/cuong/drive/code/CSV2DRF/.drfenv/lib/python3.12/site-packages/h5py/_hl/attrs.py:47(__init__)
+        2    0.000    0.000    0.000    0.000 /home/cuong/drive/code/CSV2DRF/.drfenv/lib/python3.12/site-packages/numpy/core/numerictypes.py:283(issubclass_)
+        1    0.000    0.000    0.000    0.000 <frozen importlib._bootstrap_external>:751(_compile_bytecode)
+        1    0.000    0.000    0.000    0.000 /home/cuong/drive/code/CSV2DRF/.drfenv/lib/python3.12/site-packages/numpy/core/records.py:435(__array_finalize__)
+        6    0.000    0.000    0.000    0.000 /usr/lib/python3.12/argparse.py:1887(_add_action)
+        1    0.000    0.000    0.000    0.000 /usr/lib/python3.12/locale.py:582(getlocale)
+        6    0.000    0.000    0.000    0.000 /usr/lib/python3.12/re/_parser.py:274(getuntil)
+        1    0.000    0.000    0.000    0.000 /home/cuong/drive/code/CSV2DRF/.drfenv/lib/python3.12/site-packages/numpy/core/numerictypes.py:357(issubdtype)
+        9    0.000    0.000    0.000    0.000 {method 'index' of 'str' objects}
+        1    0.000    0.000    0.000    0.000 <frozen posixpath>:169(basename)
+        6    0.000    0.000    0.000    0.000 /usr/lib/python3.12/argparse.py:1633(_pop_action_class)
+        4    0.000    0.000    0.000    0.000 /usr/lib/python3.12/argparse.py:963(__init__)
+        1    0.000    0.000    0.000    0.000 /usr/lib/python3.12/glob.py:31(iglob)
+       17    0.000    0.000    0.000    0.000 /usr/lib/python3.12/re/_parser.py:172(__setitem__)
+        3    0.000    0.000    0.000    0.000 <frozen importlib._bootstrap>:1222(__enter__)
+        1    0.000    0.000    0.000    0.000 <frozen importlib._bootstrap>:416(__enter__)
+        1    0.000    0.000    0.001    0.001 /usr/lib/python3.12/_strptime.py:261(compile)
+        1    0.000    0.000    0.000    0.000 <frozen importlib._bootstrap>:232(__init__)
+        3    0.000    0.000    0.000    0.000 /usr/lib/python3.12/argparse.py:1637(_get_handler)
+        1    0.000    0.000    0.000    0.000 <frozen importlib._bootstrap_external>:611(_get_cached)
+        1    0.000    0.000    0.000    0.000 {method 'sort' of 'list' objects}
+       11    0.000    0.000    0.000    0.000 /usr/lib/python3.12/re/_parser.py:77(__init__)
+        7    0.000    0.000    0.000    0.000 /usr/lib/python3.12/enum.py:202(__get__)
+       26    0.000    0.000    0.000    0.000 /usr/lib/python3.12/glob.py:230(_ishidden)
+        6    0.000    0.000    0.000    0.000 /usr/lib/python3.12/re/_parser.py:304(checkgroupname)
+       18    0.000    0.000    0.000    0.000 {method 'find' of 'str' objects}
+        1    0.000    0.000    0.000    0.000 {method 'replace' of 'datetime.datetime' objects}
+        1    0.000    0.000    0.000    0.000 /usr/lib/python3.12/configparser.py:939(__getitem__)
+        1    0.000    0.000    0.000    0.000 /usr/lib/python3.12/collections/__init__.py:1009(__getitem__)
+       23    0.000    0.000    0.000    0.000 /usr/lib/python3.12/re/_compiler.py:428(_get_iscased)
+        1    0.000    0.000    0.000    0.000 <frozen importlib._bootstrap>:372(release)
+        2    0.000    0.000    0.000    0.000 <frozen importlib._bootstrap_external>:132(_path_split)
+        1    0.000    0.000    0.000    0.000 <frozen importlib._bootstrap>:162(__enter__)
+        3    0.000    0.000    0.000    0.000 /usr/lib/python3.12/argparse.py:2378(_get_nargs_pattern)
+        1    0.000    0.000    0.000    0.000 /usr/lib/python3.12/logging/__init__.py:1776(getEffectiveLevel)
+        1    0.000    0.000    0.000    0.000 {built-in method _imp.is_builtin}
+        3    0.000    0.000    0.000    0.000 /usr/lib/python3.12/argparse.py:2569(_get_value)
+       18    0.000    0.000    0.000    0.000 {built-in method builtins.callable}
+        6    0.000    0.000    0.000    0.000 /usr/lib/python3.12/argparse.py:610(format)
+        1    0.000    0.000    0.000    0.000 <frozen importlib._bootstrap>:82(remove)
+        1    0.000    0.000    0.000    0.000 {built-in method builtins.exec}
+        2    0.000    0.000    0.000    0.000 <frozen importlib._bootstrap>:480(_call_with_frames_removed)
+        7    0.000    0.000    0.000    0.000 <frozen importlib._bootstrap>:491(_verbose_message)
+        3    0.000    0.000    0.000    0.000 {method 'mro' of 'type' objects}
+        3    0.000    0.000    0.000    0.000 /usr/lib/python3.12/gettext.py:631(gettext)
+        1    0.000    0.000    0.000    0.000 {method 'timestamp' of 'datetime.datetime' objects}
+        1    0.000    0.000    0.000    0.000 /usr/lib/python3.12/argparse.py:1907(parse_args)
+        1    0.000    0.000    0.000    0.000 /usr/lib/python3.12/uuid.py:334(hex)
+        6    0.000    0.000    0.000    0.000 /usr/lib/python3.12/argparse.py:1646(_check_conflict)
+        1    0.000    0.000    0.000    0.000 <frozen importlib._bootstrap_external>:1520(find_spec)
+       15    0.000    0.000    0.000    0.000 {method 'isalnum' of 'str' objects}
+        3    0.000    0.000    0.000    0.000 /usr/lib/python3.12/configparser.py:852(optionxform)
+        6    0.000    0.000    0.000    0.000 /usr/lib/python3.12/argparse.py:601(_metavar_formatter)
+        3    0.000    0.000    0.000    0.000 <frozen os>:766(decode)
+        1    0.000    0.000    0.000    0.000 <frozen importlib._bootstrap>:982(find_spec)
+        7    0.000    0.000    0.000    0.000 /usr/lib/python3.12/enum.py:1292(value)
+        1    0.000    0.000    0.000    0.000 /usr/lib/python3.12/argparse.py:1143(__init__)
+        1    0.000    0.000    0.000    0.000 {built-in method posix.urandom}
+       12    0.000    0.000    0.000    0.000 /home/cuong/drive/code/CSV2DRF/.drfenv/lib/python3.12/site-packages/h5py/_hl/base.py:502(product)
+        1    0.000    0.000    0.000    0.000 /usr/lib/python3.12/collections/__init__.py:999(__init__)
+        2    0.000    0.000    0.000    0.000 <frozen importlib._bootstrap>:632(cached)
+        3    0.000    0.000    0.000    0.000 <frozen importlib._bootstrap_external>:84(_unpack_uint32)
+        1    0.000    0.000    0.000    0.000 {built-in method _imp.find_frozen}
+        1    0.000    0.000    0.000    0.000 /usr/lib/python3.12/logging/__init__.py:1517(debug)
+        1    0.000    0.000    0.000    0.000 /usr/lib/python3.12/locale.py:464(_parse_localename)
+        1    0.000    0.000    0.000    0.000 <frozen importlib._bootstrap_external>:666(_classify_pyc)
+       13    0.000    0.000    0.000    0.000 <frozen _collections_abc>:341(__subclasshook__)
+        2    0.000    0.000    0.000    0.000 <frozen _collections_abc>:288(__subclasshook__)
+        1    0.000    0.000    0.000    0.000 <frozen importlib._bootstrap>:420(__exit__)
+        5    0.000    0.000    0.000    0.000 /usr/lib/python3.12/argparse.py:2279(_parse_optional)
+        1    0.000    0.000    0.000    0.000 {method 'groupdict' of 're.Match' objects}
+        1    0.000    0.000    0.000    0.000 <frozen importlib._bootstrap_external>:643(_check_name_wrapper)
+        1    0.000    0.000    0.000    0.000 <frozen importlib._bootstrap_external>:699(_validate_timestamp_pyc)
+        1    0.000    0.000    0.000    0.000 /home/cuong/drive/code/CSV2DRF/.drfenv/lib/python3.12/site-packages/numpy/core/_internal.py:920(npy_ctypes_check)
+        1    0.000    0.000    0.000    0.000 /usr/lib/python3.12/re/_parser.py:893(_parse_flags)
+        1    0.000    0.000    0.000    0.000 /usr/lib/python3.12/logging/__init__.py:243(_releaseLock)
+        1    0.000    0.000    0.000    0.000 /usr/lib/python3.12/_strptime.py:26(_getlang)
+        1    0.000    0.000    0.000    0.000 /usr/lib/python3.12/configparser.py:855(has_option)
+       12    0.000    0.000    0.000    0.000 {method 'isascii' of 'str' objects}
+        6    0.000    0.000    0.000    0.000 /usr/lib/python3.12/argparse.py:218(__init__)
+        3    0.000    0.000    0.000    0.000 /home/cuong/drive/code/CSV2DRF/.drfenv/lib/python3.12/site-packages/packaging/version.py:379(<genexpr>)
+        1    0.000    0.000    0.000    0.000 <frozen os>:1087(__subclasshook__)
+        4    0.000    0.000    0.000    0.000 <frozen importlib._bootstrap_external>:134(<genexpr>)
+        3    0.000    0.000    0.000    0.000 <frozen importlib._bootstrap_external>:140(_path_stat)
+        1    0.000    0.000    0.000    0.000 /usr/lib/python3.12/contextlib.py:359(__exit__)
+        6    0.000    0.000    0.000    0.000 {method 'isidentifier' of 'str' objects}
+        1    0.000    0.000    0.000    0.000 /usr/lib/python3.12/argparse.py:1583(_get_positional_kwargs)
+        1    0.000    0.000    0.000    0.000 /home/cuong/drive/code/CSV2DRF/.drfenv/lib/python3.12/site-packages/packaging/version.py:267(epoch)
+        1    0.000    0.000    0.000    0.000 <frozen importlib._bootstrap_external>:159(_path_isfile)
+        1    0.000    0.000    0.000    0.000 <frozen _collections_abc>:388(__subclasshook__)
+        1    0.000    0.000    0.000    0.000 <frozen importlib._bootstrap_external>:1202(path_stats)
+        1    0.000    0.000    0.000    0.000 /usr/lib/python3.12/argparse.py:1162(__init__)
+        1    0.000    0.000    0.000    0.000 <frozen importlib._bootstrap>:173(__exit__)
+        7    0.000    0.000    0.000    0.000 {built-in method _sre.unicode_iscased}
+        1    0.000    0.000    0.000    0.000 <frozen importlib._bootstrap>:445(cb)
+        5    0.000    0.000    0.000    0.000 {built-in method _imp.acquire_lock}
+        1    0.000    0.000    0.000    0.000 <frozen importlib._bootstrap>:79(__init__)
+        4    0.000    0.000    0.000    0.000 {built-in method from_bytes}
+        1    0.000    0.000    0.000    0.000 /usr/lib/python3.12/configparser.py:649(has_section)
+        2    0.000    0.000    0.000    0.000 /usr/lib/python3.12/configparser.py:1329(__iter__)
+        3    0.000    0.000    0.000    0.000 /usr/lib/python3.12/argparse.py:992(__call__)
+        1    0.000    0.000    0.000    0.000 {built-in method _locale.setlocale}
+        6    0.000    0.000    0.000    0.000 {method 'reverse' of 'list' objects}
+        1    0.000    0.000    0.000    0.000 {method 'acquire' of '_thread.RLock' objects}
+        1    0.000    0.000    0.000    0.000 <frozen importlib._bootstrap>:1128(find_spec)
+        2    0.000    0.000    0.000    0.000 {method 'remove' of 'list' objects}
+        3    0.000    0.000    0.000    0.000 {method 'decode' of 'bytes' objects}
+        6    0.000    0.000    0.000    0.000 /home/cuong/drive/code/CSV2DRF/.drfenv/lib/python3.12/site-packages/h5py/_hl/base.py:161(_lapl)
+        1    0.000    0.000    0.000    0.000 <frozen importlib._bootstrap>:48(_new_module)
+        1    0.000    0.000    0.000    0.000 /home/cuong/drive/code/CSV2DRF/.drfenv/lib/python3.12/site-packages/packaging/version.py:278(release)
+        4    0.000    0.000    0.000    0.000 /usr/lib/python3.12/re/_parser.py:166(__delitem__)
+        1    0.000    0.000    0.000    0.000 <frozen importlib._bootstrap_external>:1469(_path_importer_cache)
+        1    0.000    0.000    0.000    0.000 {method 'count' of 'list' objects}
+        5    0.000    0.000    0.000    0.000 {built-in method _imp.release_lock}
+        1    0.000    0.000    0.000    0.000 <frozen importlib._bootstrap_external>:150(_path_is_mode_type)
+        1    0.000    0.000    0.000    0.000 /usr/lib/python3.12/logging/__init__.py:1369(disable)
+        2    0.000    0.000    0.000    0.000 {method 'end' of 're.Match' objects}
+        3    0.000    0.000    0.000    0.000 <frozen importlib._bootstrap>:1226(__exit__)
+        1    0.000    0.000    0.000    0.000 /usr/lib/python3.12/argparse.py:1899(_get_positional_actions)
+        1    0.000    0.000    0.000    0.000 <frozen importlib._bootstrap_external>:185(_path_abspath)
+        2    0.000    0.000    0.000    0.000 {method 'start' of 're.Match' objects}
+        2    0.000    0.000    0.000    0.000 {method 'toordinal' of 'datetime.date' objects}
+        3    0.000    0.000    0.000    0.000 {built-in method sys.audit}
+        2    0.000    0.000    0.000    0.000 {method '__exit__' of '_thread.RLock' objects}
+        1    0.000    0.000    0.000    0.000 {built-in method _thread.allocate_lock}
+        2    0.000    0.000    0.000    0.000 {method 'pop' of 'list' objects}
+        1    0.000    0.000    0.000    0.000 <frozen _collections_abc>:407(__subclasshook__)
+        2    0.000    0.000    0.000    0.000 {built-in method _thread.get_ident}
+        1    0.000    0.000    0.000    0.000 {method 'release' of '_thread.RLock' objects}
+        1    0.000    0.000    0.000    0.000 /usr/lib/python3.12/contextlib.py:355(__init__)
+        3    0.000    0.000    0.000    0.000 /usr/lib/python3.12/argparse.py:2594(_check_value)
+        1    0.000    0.000    0.000    0.000 {built-in method _io.text_encoding}
+        2    0.000    0.000    0.000    0.000 /usr/lib/python3.12/configparser.py:1170(converters)
+        1    0.000    0.000    0.000    0.000 {built-in method _imp._fix_co_filename}
+        1    0.000    0.000    0.000    0.000 <frozen importlib._bootstrap_external>:180(_path_isabs)
+        1    0.000    0.000    0.000    0.000 {built-in method _weakref._remove_dead_weakref}
+        1    0.000    0.000    0.000    0.000 {method '__exit__' of '_thread.lock' objects}
+        1    0.000    0.000    0.000    0.000 <frozen importlib._bootstrap>:599(__init__)
+        1    0.000    0.000    0.000    0.000 {method 'weekday' of 'datetime.date' objects}
+        1    0.000    0.000    0.000    0.000 <frozen posixpath>:52(normcase)
+        1    0.000    0.000    0.000    0.000 {method 'close' of 'generator' objects}
+        3    0.000    0.000    0.000    0.000 /usr/lib/python3.12/argparse.py:1816(identity)
+        1    0.000    0.000    0.000    0.000 <frozen importlib._bootstrap_external>:986(create_module)
+        1    0.000    0.000    0.000    0.000 /usr/lib/python3.12/glob.py:214(_join)
+        1    0.000    0.000    0.000    0.000 <frozen importlib._bootstrap_external>:1153(__init__)
+        1    0.000    0.000    0.000    0.000 /usr/lib/python3.12/argparse.py:1361(__init__)
+        1    0.000    0.000    0.000    0.000 <frozen importlib._bootstrap>:158(__init__)
+        1    0.000    0.000    0.000    0.000 <frozen importlib._bootstrap>:412(__init__)
+        1    0.000    0.000    0.000    0.000 /usr/lib/python3.12/contextlib.py:357(__enter__)
+        1    0.000    0.000    0.000    0.000 <frozen importlib._bootstrap_external>:71(_relax_case)
+        1    0.000    0.000    0.000    0.000 /usr/lib/python3.12/configparser.py:341(before_read)
+        1    0.000    0.000    0.000    0.000 <frozen importlib._bootstrap_external>:1178(get_filename)
+        1    0.000    0.000    0.000    0.000 /usr/lib/python3.12/configparser.py:335(before_get)
+        1    0.000    0.000    0.000    0.000 <frozen importlib._bootstrap>:653(has_location)
+
