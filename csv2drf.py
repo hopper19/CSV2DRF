@@ -7,7 +7,7 @@ Utility to convert G2 raw data from CSV to DRF
 @author Cuong Nguyen
 """
 
-import pprint
+from typing import Union
 import shutil
 import re, os, sys, glob, datetime
 import argparse
@@ -181,7 +181,7 @@ class CSV2DRFConverter:
                 * self.metadata["ad_sample_rate"]
             )
 
-    def __extract_meta_from_header(self, csv_file: str | os.PathLike):
+    def __extract_meta_from_header(self, csv_file: Union[str, os.PathLike]):
         """
         Extract and parse the header from the given CSV file.
 
@@ -269,7 +269,7 @@ class CSV2DRFConverter:
         ]
 
 if __name__ == "__main__":
-    version = "4.3"
+    version = "4.4"
 
     parser = argparse.ArgumentParser(description="Grape 2 CSV to DRF Converter")
     parser.add_argument(
