@@ -28,15 +28,6 @@ BEACON_FREQUENCIES = {
     "CHU14": 14.67,
 }
 
-class ConfigLoader:
-    def __init__(self, configpath):
-        self.config = ConfigParser(interpolation=None)
-        self.config.read(configpath)
-
-    def get_compression_level(self):
-        return int(self.config["global"]["compression_level"])
-
-
 class CSV2DRFConverter:
 
     def __init__(
@@ -44,7 +35,7 @@ class CSV2DRFConverter:
         input_dir: str,
         date: str,
         output_dir: str,
-        config_path,
+        compression_level: int = 0,
     ):
         self.input_files = sorted(glob.glob(os.path.join(input_dir, f"{date}*.csv")))
         if not self.input_files:
@@ -66,7 +57,6 @@ class CSV2DRFConverter:
         subdir_cadence = 3600
         file_cadence_secs = 60
 
-        self.config = ConfigLoader(config_path)
         self.meta_writer = drf.DigitalMetadataWriter(
             metadata_dir,
             subdir_cadence,
@@ -84,7 +74,7 @@ class CSV2DRFConverter:
             self.metadata["ad_sample_rate"],
             1,
             None,
-            compression_level=self.config.get_compression_level(),
+            compression_level=compression_level,
             checksum=True,
             is_complex=False,
             num_subchannels=3,
@@ -268,9 +258,7 @@ class CSV2DRFConverter:
             float(BEACON_FREQUENCIES[beacon]) for beacon in self.metadata["beacons"]
         ]
 
-if __name__ == "__main__":
-    version = "4.4"
-
+def main():
     parser = argparse.ArgumentParser(description="Grape 2 CSV to DRF Converter")
     parser.add_argument(
         "-i", "--input_dir", help="Input directory containing CSV files", required=True
@@ -279,18 +267,17 @@ if __name__ == "__main__":
         "-o", "--output_dir", help="Output directory for DRF files", required=True
     )
     parser.add_argument("dates", help="date(s) of the data to be converted", nargs="+")
-    parser.add_argument("-u", "--uuid", help="User-defined UUID")
     parser.add_argument(
-        "-v",
-        "--version",
-        action="version",
-        version=f"%(prog)s v{version}",
-        help="show program version",
+        "-c", "--compression", type=int, default=0, 
+        help="Compression level (0-9, default: 0 for no compression)"
     )
 
     args = parser.parse_args()
 
     for date in args.dates:
         CSV2DRFConverter(
-            args.input_dir, date, args.output_dir, sys.argv[0].replace(".py", ".conf")
+            args.input_dir, date, args.output_dir, args.compression
         ).run()
+
+if __name__ == "__main__":
+    main()

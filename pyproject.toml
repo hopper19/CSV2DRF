@@ -1,0 +1,21 @@
+[tool.poetry]
+name = "csv2drf"
+version = "4.5.0"
+description = "Utility to convert G2 raw data from CSV to DRF"
+authors = ["hopper19 <cuongvnus2001@gmail.com>"]
+license = "MIT"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12.7"
+polars = "^1.24.0"
+digital-rf = "^2.6.11"
+numpy = "^2.2.3"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.scripts]
+csv2drf = "csv2drf:main"
