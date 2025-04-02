@@ -41,6 +41,7 @@ class CSV2DRFConverter:
         if not self.input_files:
             raise Exception(f"No files found for {date}")
         self.metadata = {}
+        self.sample_rate = 0
         self.__extract_meta_from_header(self.input_files[0])
         # print(self.metadata)
         self.start_global_index = self.__calculate_start_global_index(self.input_files[0])
@@ -61,7 +62,7 @@ class CSV2DRFConverter:
             metadata_dir,
             subdir_cadence,
             file_cadence_secs,
-            self.metadata["ad_sample_rate"],
+            self.sample_rate,
             1,
             "metadata",
         )
@@ -71,7 +72,7 @@ class CSV2DRFConverter:
             subdir_cadence,
             file_cadence_secs * 1000,
             self.start_global_index,
-            self.metadata["ad_sample_rate"],
+            self.sample_rate,
             1,
             None,
             compression_level=compression_level,
@@ -97,7 +98,7 @@ class CSV2DRFConverter:
                 meta["timestamp"]
                 .str.strptime(pl.Datetime, format="%Y%m%d%H%M%S")
                 .dt.epoch(time_unit="s")
-                * self.metadata["ad_sample_rate"]
+                * self.sample_rate
             )
             self.metadata.update(meta.row(0, named=True))
             meta_dict = {}
@@ -113,7 +114,7 @@ class CSV2DRFConverter:
                 self.data_writer.rf_write(data)
             else:
                 global_sample_arr = samples - self.start_global_index
-                block_sample_arr = np.arange(len(samples)) * self.metadata["ad_sample_rate"]
+                block_sample_arr = np.arange(len(samples)) * self.sample_rate
                 self.data_writer.rf_write_blocks(data, global_sample_arr, block_sample_arr)
 
     def __parse_file(self, file: str):
@@ -168,7 +169,7 @@ class CSV2DRFConverter:
                 datetime.datetime.strptime(line[1:15], "%Y%m%d%H%M%S")
                 .replace(tzinfo=datetime.timezone.utc)
                 .timestamp()
-                * self.metadata["ad_sample_rate"]
+                * self.sample_rate
             )
 
     def __extract_meta_from_header(self, csv_file: Union[str, os.PathLike]):
@@ -188,6 +189,11 @@ class CSV2DRFConverter:
             self.__extract_metadata(comment_lines)
             self.__cleanup_metadata()
             self.__calculate_center_frequencies()
+        self.sample_rate = int(
+            self.metadata["ad_sample_rate"]
+            if "ad_sample_rate" in self.metadata
+            else 8000
+        )
         # pprint.pprint(self.metadata)
 
     def __extract_metadata(self, lines: list[str]):

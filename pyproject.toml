@@ -1,16 +1,16 @@
 [tool.poetry]
 name = "csv2drf"
-version = "4.5.0"
+version = "4.5.1"
 description = "Utility to convert G2 raw data from CSV to DRF"
 authors = ["hopper19 <cuongvnus2001@gmail.com>"]
 license = "MIT"
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "^3.12.7"
+python = "^3.9"
 polars = "^1.24.0"
 digital-rf = "^2.6.11"
-numpy = "^2.2.3"
+numpy = "^2.0.2"
 
 
 [build-system]
