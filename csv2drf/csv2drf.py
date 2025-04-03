@@ -15,6 +15,8 @@ import digital_rf as drf
 from configparser import ConfigParser
 import polars as pl
 import numpy as np
+import logging
+import traceback
 
 BEACON_FREQUENCIES = {
     "WWV2p5": 2.5,
@@ -28,6 +30,11 @@ BEACON_FREQUENCIES = {
     "CHU14": 14.67,
 }
 
+# Reset any existing logging configuration
+for handler in logging.root.handlers[:]:
+    logging.root.removeHandler(handler)
+logger = logging.getLogger(__name__)
+
 class CSV2DRFConverter:
 
     def __init__(
@@ -37,7 +44,7 @@ class CSV2DRFConverter:
         output_dir: str,
         compression_level: int = 0,
     ):
-        self.input_files = sorted(glob.glob(os.path.join(input_dir, f"{date}*.csv")))
+        self.input_files = sorted(glob.glob(os.path.join(input_dir, f"{date}*RAWDATA.csv")))
         if not self.input_files:
             raise Exception(f"No files found for {date}")
         self.metadata = {}
@@ -91,31 +98,38 @@ class CSV2DRFConverter:
             "verify": "S1",
         }
         for file in self.input_files:
-            # print(f"Processing {os.path.basename(file)}")
-            self.__extract_meta_from_header(file)
-            data, meta = self.__parse_file(file)
-            samples = (
-                meta["timestamp"]
-                .str.strptime(pl.Datetime, format="%Y%m%d%H%M%S")
-                .dt.epoch(time_unit="s")
-                * self.sample_rate
-            )
-            self.metadata.update(meta.row(0, named=True))
-            meta_dict = {}
-            for col in meta.columns:
-                arr = meta[col].to_numpy()[1:]  # first row was be written "manually"
-                if col in type_map:
-                    arr = arr.astype(type_map[col])
-                meta_dict[col] = arr
-            self.meta_writer.write(samples[0], self.metadata)
-            self.meta_writer.write(samples[1:], meta_dict) 
-            # TEST: performance when using ONLY write blocks
-            if len(samples) == 3600:  # no gaps
-                self.data_writer.rf_write(data)
-            else:
-                global_sample_arr = samples - self.start_global_index
-                block_sample_arr = np.arange(len(samples)) * self.sample_rate
-                self.data_writer.rf_write_blocks(data, global_sample_arr, block_sample_arr)
+            try:
+                # print(f"Processing {os.path.basename(file)}")
+                self.__extract_meta_from_header(file)
+                data, meta = self.__parse_file( file)
+                samples = (
+                    meta["timestamp"]
+                    .str.strptime(pl.Datetime, format="%Y%m%d%H%M%S")
+                    .dt.epoch(time_unit="s")
+                    * self.sample_rate
+                )
+                self.metadata.update(meta.row(0, named=True))
+                meta_dict = {}
+                for col in meta.columns:
+                    arr = meta[col].to_numpy()[1:]  # first row was be written "manually"
+                    if col in type_map:
+                        arr = arr.astype(type_map[col])
+                    meta_dict[col] = arr
+                self.meta_writer.write(samples[0], self.metadata)
+                self.meta_writer.write(samples[1:], meta_dict)
+                # TEST: performance when using ONLY write blocks
+                if len(samples) == 3600:  # no gaps
+                    self.data_writer.rf_write(data)
+                else:
+                    global_sample_arr = samples - self.start_global_index
+                    block_sample_arr = np.arange(len(samples)) * self.sample_rate
+                    self.data_writer.rf_write_blocks(
+                        data, global_sample_arr, block_sample_arr
+                    )
+            except Exception as e:
+                error_message = f"Error processing file {file}"
+                logger.error(error_message)
+                logger.error(f"Traceback: {traceback.format_exc()}")
 
     def __parse_file(self, file: str):
         samples = pl.scan_csv(
@@ -264,6 +278,7 @@ class CSV2DRFConverter:
             float(BEACON_FREQUENCIES[beacon]) for beacon in self.metadata["beacons"]
         ]
 
+
 def main():
     parser = argparse.ArgumentParser(description="Grape 2 CSV to DRF Converter")
     parser.add_argument(
@@ -274,16 +289,39 @@ def main():
     )
     parser.add_argument("dates", help="date(s) of the data to be converted", nargs="+")
     parser.add_argument(
-        "-c", "--compression", type=int, default=0, 
-        help="Compression level (0-9, default: 0 for no compression)"
+        "-c",
+        "--compression",
+        type=int,
+        default=0,
+        help="Compression level (0-9, default: 0 for no compression)",
+    )
+    parser.add_argument(
+        "-l",
+        "--log_file",
+        help="Path to the log file (if not specified, logging is disabled)",
     )
 
     args = parser.parse_args()
+    if args.log_file:
+        logging.basicConfig(
+            filename=args.log_file,
+            level=logging.INFO,
+            format="%(asctime)s - %(levelname)s - %(message)s",
+            datefmt="%Y-%m-%d %H:%M:%S",
+        )
+        # Log the command that was used
+        command = f"python {' '.join(sys.argv)}"
+        logger.info(f"Command: {command}")
 
     for date in args.dates:
-        CSV2DRFConverter(
-            args.input_dir, date, args.output_dir, args.compression
-        ).run()
+        try:
+            converter = CSV2DRFConverter(
+                args.input_dir, date, args.output_dir, args.compression
+            )
+            converter.run()
+        except Exception as e:
+            error_message = f"Error applying conversion for date {date}"
+            logger.error(error_message)
 
 if __name__ == "__main__":
     main()

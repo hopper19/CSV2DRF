@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "csv2drf"
-version = "4.5.1"
+version = "4.6.0"
 description = "Utility to convert G2 raw data from CSV to DRF"
 authors = ["hopper19 <cuongvnus2001@gmail.com>"]
 license = "MIT"
