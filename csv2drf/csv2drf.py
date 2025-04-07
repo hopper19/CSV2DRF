@@ -17,6 +17,7 @@ import polars as pl
 import numpy as np
 import logging
 import traceback
+from tqdm import tqdm
 
 BEACON_FREQUENCIES = {
     "WWV2p5": 2.5,
@@ -35,6 +36,7 @@ for handler in logging.root.handlers[:]:
     logging.root.removeHandler(handler)
 logger = logging.getLogger(__name__)
 
+
 class CSV2DRFConverter:
 
     def __init__(
@@ -44,14 +46,18 @@ class CSV2DRFConverter:
         output_dir: str,
         compression_level: int = 0,
     ):
-        self.input_files = sorted(glob.glob(os.path.join(input_dir, f"{date}*RAWDATA.csv")))
+        self.input_files = sorted(
+            glob.glob(os.path.join(input_dir, f"{date}*RAWDATA.csv"))
+        )
         if not self.input_files:
             raise Exception(f"No files found for {date}")
         self.metadata = {}
         self.sample_rate = 0
         self.__extract_meta_from_header(self.input_files[0])
         # print(self.metadata)
-        self.start_global_index = self.__calculate_start_global_index(self.input_files[0])
+        self.start_global_index = self.__calculate_start_global_index(
+            self.input_files[0]
+        )
 
         obs_dir = os.path.join(output_dir, "OBS" + date + "T00-00")
         shutil.rmtree(obs_dir, ignore_errors=True)
@@ -97,11 +103,11 @@ class CSV2DRFConverter:
             "checksum": "S8",
             "verify": "S1",
         }
-        for file in self.input_files:
+        for file in tqdm(self.input_files):
             try:
                 # print(f"Processing {os.path.basename(file)}")
                 self.__extract_meta_from_header(file)
-                data, meta = self.__parse_file( file)
+                data, meta = self.__parse_file(file)
                 samples = (
                     meta["timestamp"]
                     .str.strptime(pl.Datetime, format="%Y%m%d%H%M%S")
@@ -111,7 +117,7 @@ class CSV2DRFConverter:
                 self.metadata.update(meta.row(0, named=True))
                 meta_dict = {}
                 for col in meta.columns:
-                    arr = meta[col].to_numpy()[1:]  # first row was be written "manually"
+                    arr = meta[col].to_numpy()[1:]  # first row was written "manually"
                     if col in type_map:
                         arr = arr.astype(type_map[col])
                     meta_dict[col] = arr
@@ -136,31 +142,46 @@ class CSV2DRFConverter:
             file,
             schema=pl.Schema({f"f{i}": pl.String for i in range(3)}),
             comment_prefix="#",
-            has_header=False
+            has_header=False,
+        ).filter(pl.first().str.contains("^[A-Za-z0-9]+$"))
+        uncal_data = (
+            samples.drop_nulls()
+            .select(pl.all().str.to_integer(base=16).cast(pl.Int32))
         )
-        uncal_data = samples.drop_nulls().select(pl.all().str.to_integer(base=16).cast(pl.Int32))
-        meta_row = samples.filter(pl.any_horizontal(pl.all().is_null())).select(pl.first())
+        meta_row = samples.filter(pl.any_horizontal(pl.all().is_null())).select(
+            pl.first()
+        )
         timestamp = (
-            meta_row
-            .gather_every(2)
-            .with_columns([
-                pl.first().str.slice(1, 14).alias("timestamp"),
-                pl.first().str.slice(15, 1).alias("gps_lock"),
-                pl.first().str.slice(16, 1).cast(pl.UInt8).alias("gps_fix"),
-                pl.first().str.slice(17, 1).str.to_integer(base=16).cast(pl.UInt8).alias("sat_count"),
-                pl.first().str.slice(18, 1).str.to_integer(base=16).cast(pl.UInt8).alias("pdop")
-            ])
+            meta_row.filter(pl.first().str.starts_with("T"))
+            .with_columns(
+                [
+                    pl.first().str.slice(1, 14).alias("timestamp"),
+                    pl.first().str.slice(15, 1).alias("gps_lock"),
+                    pl.first().str.slice(16, 1).cast(pl.UInt8).alias("gps_fix"),
+                    pl.first()
+                    .str.slice(17, 1)
+                    .str.to_integer(base=16)
+                    .cast(pl.UInt8)
+                    .alias("sat_count"),
+                    pl.first()
+                    .str.slice(18, 1)
+                    .str.to_integer(base=16)
+                    .cast(pl.UInt8)
+                    .alias("pdop"),
+                ]
+            )
             .select(["timestamp", "gps_lock", "gps_fix", "sat_count", "pdop"])
         )
-        checksum = ((
-            meta_row
-            .gather_every(2, offset=1)
-            .with_columns([
-                pl.first().str.slice(1, 8).alias("checksum"),
-                pl.first().str.slice(9, 1).alias("verify"),
-            ])
+        checksum = (
+            meta_row.filter(pl.first().str.starts_with("C"))
+            .with_columns(
+                [
+                    pl.first().str.slice(1, 8).alias("checksum"),
+                    pl.first().str.slice(9, 1).alias("verify"),
+                ]
+            )
             .select(["checksum", "verify"])
-        ))
+        )
         return (
             uncal_data.with_columns(
                 [
@@ -198,7 +219,7 @@ class CSV2DRFConverter:
             line = file.readline()
             while line.startswith("#"):
                 line = line.lstrip("#").strip()
-                comment_lines.append(line)    
+                comment_lines.append(line)
                 line = file.readline()
             self.__extract_metadata(comment_lines)
             self.__cleanup_metadata()
@@ -231,7 +252,7 @@ class CSV2DRFConverter:
                 "city_state": csv_parts[7],
                 "radio": csv_parts[8],
             }
-        ) 
+        )
         for line in lines[1:]:
             if not line or line.startswith("MetaData"):
                 continue
@@ -322,6 +343,7 @@ def main():
         except Exception as e:
             error_message = f"Error applying conversion for date {date}"
             logger.error(error_message)
+
 
 if __name__ == "__main__":
     main()
